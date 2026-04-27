@@ -292,9 +292,7 @@
 
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
-
     <div class="close-btn" onclick="closePromo()">✖</div>
-
     <div class="promo-title">Промокод</div>
 
     <div class="promo-input-box">
@@ -302,7 +300,6 @@
       <input type="text" placeholder="Введіть промокод" id="promoInput">
       <button class="promo-btn" onclick="applyPromo()">Застосувати</button>
     </div>
-
   </div>
 </div>
 
@@ -332,6 +329,30 @@
     window.location.href = "inventory.html";
   }
 
+  // 🎁 ДРОПИ
+  const drops = [
+    { name: "Glock-18 Sand Dune", chance: 18 },
+    { name: "P250 Boreal Forest", chance: 15 },
+    { name: "UMP-45 Urban DDPAT", chance: 14 },
+    { name: "MP9 Sand Scale", chance: 12 },
+    { name: "Nova Predator", chance: 10 },
+    { name: "FAMAS Survivor Z", chance: 9 },
+    { name: "Galil AR Kami", chance: 8 },
+    { name: "AK-47 Elite Build", chance: 6 },
+    { name: "M4A1-S Nitro", chance: 5 },
+    { name: "AWP Pit Viper", chance: 3 }
+  ];
+
+  function getDrop() {
+    let rand = Math.random() * 100;
+    let sum = 0;
+
+    for (let item of drops) {
+      sum += item.chance;
+      if (rand <= sum) return item;
+    }
+  }
+
   function openCase(price) {
     if (stars < price) {
       alert("Недостатньо ⭐");
@@ -342,7 +363,13 @@
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
 
-    alert("Кейс відкрито ✅");
+    const item = getDrop();
+
+    let items = JSON.parse(localStorage.getItem("items") || "[]");
+    items.push(item);
+    localStorage.setItem("items", JSON.stringify(items));
+
+    alert("🎉 Тобі випало: " + item.name);
   }
 
   function openPromo() {

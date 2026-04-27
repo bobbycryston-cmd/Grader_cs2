@@ -144,8 +144,6 @@
       font-size: 13px;
     }
 
-    /* PROMO */
-
     .promo-modal {
       position: fixed;
       top: 20px;
@@ -329,18 +327,17 @@
     window.location.href = "inventory.html";
   }
 
-  // 🎁 ДРОПИ
   const drops = [
-    { name: "Glock-18 Sand Dune", chance: 18 },
-    { name: "P250 Boreal Forest", chance: 15 },
-    { name: "UMP-45 Urban DDPAT", chance: 14 },
-    { name: "MP9 Sand Scale", chance: 12 },
-    { name: "Nova Predator", chance: 10 },
-    { name: "FAMAS Survivor Z", chance: 9 },
-    { name: "Galil AR Kami", chance: 8 },
-    { name: "AK-47 Elite Build", chance: 6 },
-    { name: "M4A1-S Nitro", chance: 5 },
-    { name: "AWP Pit Viper", chance: 3 }
+    { name: "Glock-18 Sand Dune", chance: 18, price: 1 },
+    { name: "P250 Boreal Forest", chance: 15, price: 1 },
+    { name: "UMP-45 Urban DDPAT", chance: 14, price: 1 },
+    { name: "MP9 Sand Scale", chance: 12, price: 1 },
+    { name: "Nova Predator", chance: 10, price: 2 },
+    { name: "FAMAS Survivor Z", chance: 9, price: 2 },
+    { name: "Galil AR Kami", chance: 8, price: 2 },
+    { name: "AK-47 Elite Build", chance: 6, price: 3 },
+    { name: "M4A1-S Nitro", chance: 5, price: 3 },
+    { name: "AWP Pit Viper", chance: 3, price: 5 }
   ];
 
   function getDrop() {

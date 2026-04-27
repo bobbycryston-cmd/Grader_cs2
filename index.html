@@ -22,7 +22,7 @@
       position: relative;
     }
 
-    /* PROFILE BUTTON */
+    /* PROFILE */
     .profile {
       display: flex;
       align-items: center;
@@ -62,9 +62,8 @@
 
     .stars {
       margin-top: 10px;
-      font-size: 16px;
-      cursor: pointer;
       color: gold;
+      cursor: pointer;
     }
 
     .cases {
@@ -94,11 +93,13 @@
     <div>🔊 Гучність</div>
     <input type="range" min="0" max="100" value="50" style="width:100%">
 
-    <div class="stars" onclick="addStars()">
+    <div class="stars">
       ⭐ Баланс: <span id="balance">0</span>
     </div>
 
     <button onclick="addStars()">➕ Додати зірки</button>
+
+    <button onclick="openInventory()">🎒 Inventory</button>
   </div>
 
 </div>
@@ -130,6 +131,10 @@
   function addStars() {
     stars += 10;
     document.getElementById("balance").innerText = stars;
+  }
+
+  function openInventory() {
+    window.location.href = "inventory.html";
   }
 
   document.addEventListener("click", function(e) {

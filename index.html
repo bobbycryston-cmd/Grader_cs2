@@ -18,6 +18,7 @@
       display: flex;
       justify-content: flex-end;
       padding: 12px;
+      position: relative;
     }
 
     .profile {
@@ -25,8 +26,9 @@
       align-items: center;
       gap: 8px;
       background: rgba(255,255,255,0.1);
-      padding: 8px 10px;
+      padding: 8px 12px;
       border-radius: 12px;
+      cursor: pointer;
     }
 
     .avatar {
@@ -35,12 +37,37 @@
       border-radius: 50%;
     }
 
-    /* CASE GRID */
+    .menu {
+      position: absolute;
+      top: 60px;
+      right: 12px;
+      background: rgba(0,0,0,0.9);
+      padding: 12px;
+      border-radius: 12px;
+      width: 200px;
+      display: none;
+    }
+
+    .menu button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .stars {
+      margin-top: 10px;
+      color: gold;
+    }
+
+    /* GRID */
     .case-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
-      padding: 30px;
+      gap: 20px;
+      padding: 25px;
       text-align: center;
     }
 
@@ -53,12 +80,18 @@
       transform: scale(1.08);
     }
 
-    .case img {
+    .case-img-box {
       width: 100%;
-      max-width: 140px;
-      height: auto;
-      display: block;
-      margin: 0 auto;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .case-img-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     .title {
@@ -78,28 +111,50 @@
 <body>
 
 <div class="header">
-  <div class="profile">
+
+  <div class="profile" onclick="toggleMenu()">
     <img id="avatar" class="avatar">
     <div id="name">User</div>
   </div>
+
+  <div class="menu" id="menu">
+
+    <div>🔊 Гучність</div>
+    <input type="range" min="0" max="100" value="50" style="width:100%">
+
+    <div class="stars">
+      ⭐ Баланс: <span id="balance">0</span>
+    </div>
+
+    <button onclick="addStars()">➕ Додати зірки</button>
+    <button onclick="openInventory()">🎒 Inventory</button>
+
+  </div>
+
 </div>
 
 <div class="case-grid">
 
   <div class="case" onclick="openCase(1)">
-    <img src="bronze.png">
+    <div class="case-img-box">
+      <img src="bronze.png">
+    </div>
     <div class="title">Bronze</div>
     <div class="price">1 ⭐</div>
   </div>
 
   <div class="case" onclick="openCase(3)">
-    <img src="silver.png">
+    <div class="case-img-box">
+      <img src="silver.png">
+    </div>
     <div class="title">Silver</div>
     <div class="price">3 ⭐</div>
   </div>
 
   <div class="case" onclick="openCase(5)">
-    <img src="gold.png">
+    <div class="case-img-box">
+      <img src="gold.png">
+    </div>
     <div class="title">Gold</div>
     <div class="price">5 ⭐</div>
   </div>
@@ -110,6 +165,9 @@
   const tg = window.Telegram.WebApp;
   tg.expand();
 
+  let stars = parseInt(localStorage.getItem("stars") || "0");
+  document.getElementById("balance").innerText = stars;
+
   const user = tg.initDataUnsafe.user;
 
   if (user) {
@@ -117,9 +175,39 @@
     if (user.photo_url) document.getElementById("avatar").src = user.photo_url;
   }
 
-  function openCase(price) {
-    alert("Відкриття кейса за " + price + " ⭐");
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
+
+  function addStars() {
+    stars += 10;
+    localStorage.setItem("stars", stars);
+    document.getElementById("balance").innerText = stars;
+  }
+
+  function openInventory() {
+    window.location.href = "inventory.html";
+  }
+
+  function openCase(price) {
+    if (stars < price) {
+      alert("Недостатньо ⭐");
+      return;
+    }
+
+    stars -= price;
+    localStorage.setItem("stars", stars);
+    document.getElementById("balance").innerText = stars;
+
+    alert("Відкриття кейса...");
+  }
+
+  document.addEventListener("click", function(e) {
+    if (!e.target.closest(".profile")) {
+      document.getElementById("menu").style.display = "none";
+    }
+  });
 </script>
 
 </body>

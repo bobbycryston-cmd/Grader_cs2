@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory</title>
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #1a1a2e;
+      color: white;
+    }
+
+    .top {
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .item {
+      background: rgba(255,255,255,0.1);
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="top">
+  <h3>🎒 Inventory</h3>
+  <button onclick="back()">⬅ Back</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+  function loadItems() {
+    let items = JSON.parse(localStorage.getItem("items") || "[]");
+    let html = "";
+
+    items.forEach((item, i) => {
+      html += `
+        <div class="item">
+          🎁 ${item.name}
+          <br>
+          <button onclick="sell(${i})">Sell</button>
+          <button onclick="withdraw(${i})">Withdraw</button>
+        </div>
+      `;
+    });
+
+    document.getElementById("list").innerHTML = html;
+  }
+
+  function sell(i) {
+    let items = JSON.parse(localStorage.getItem("items") || "[]");
+    items.splice(i, 1);
+    localStorage.setItem("items", JSON.stringify(items));
+    loadItems();
+  }
+
+  function withdraw(i) {
+    alert("Withdraw coming soon ⭐");
+  }
+
+  function back() {
+    window.location.href = "index.html";
+  }
+
+  loadItems();
+</script>
+
+</body>
+</html>

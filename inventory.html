@@ -17,6 +17,12 @@
       padding: 15px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
     }
 
     .item {
@@ -30,6 +36,8 @@
       margin-top: 5px;
       padding: 5px 10px;
       cursor: pointer;
+      border: none;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -38,7 +46,11 @@
 
 <div class="top">
   <h3>🎒 Inventory</h3>
-  <button onclick="back()">⬅ Back</button>
+
+  <div class="buttons">
+    <button onclick="sellAll()">💰 Sell All</button>
+    <button onclick="back()">⬅ Back</button>
+  </div>
 </div>
 
 <div id="list"></div>
@@ -53,6 +65,8 @@
         <div class="item">
           🎁 ${item.name}
           <br>
+          💰 ${item.price || 1} ⭐
+          <br>
           <button onclick="sell(${i})">Sell</button>
           <button onclick="withdraw(${i})">Withdraw</button>
         </div>
@@ -64,8 +78,40 @@
 
   function sell(i) {
     let items = JSON.parse(localStorage.getItem("items") || "[]");
+
+    let stars = parseInt(localStorage.getItem("stars") || "0");
+    stars += items[i].price || 1;
+
+    localStorage.setItem("stars", stars);
+
     items.splice(i, 1);
     localStorage.setItem("items", JSON.stringify(items));
+
+    loadItems();
+  }
+
+  function sellAll() {
+    let items = JSON.parse(localStorage.getItem("items") || "[]");
+
+    if (items.length === 0) {
+      alert("Інвентар пустий");
+      return;
+    }
+
+    let total = 0;
+
+    items.forEach(item => {
+      total += item.price || 1;
+    });
+
+    let stars = parseInt(localStorage.getItem("stars") || "0");
+    stars += total;
+
+    localStorage.setItem("stars", stars);
+    localStorage.setItem("items", JSON.stringify([]));
+
+    alert("Продано все за " + total + " ⭐");
+
     loadItems();
   }
 

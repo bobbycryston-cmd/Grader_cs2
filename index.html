@@ -10,7 +10,7 @@
     body {
       margin: 0;
       font-family: Arial;
-      background: radial-gradient(circle at top, #1f1b3a, #0b0a1a 80%);
+      background: radial-gradient(circle at top, #1a1735, #090816 80%);
       color: white;
     }
 
@@ -18,7 +18,6 @@
       display: flex;
       justify-content: flex-end;
       padding: 12px;
-      position: relative;
     }
 
     .profile {
@@ -28,7 +27,6 @@
       background: rgba(255,255,255,0.1);
       padding: 8px 10px;
       border-radius: 12px;
-      cursor: pointer;
     }
 
     .avatar {
@@ -37,84 +35,42 @@
       border-radius: 50%;
     }
 
-    .menu {
-      position: absolute;
-      top: 60px;
-      right: 12px;
-      background: rgba(0,0,0,0.9);
-      padding: 12px;
-      border-radius: 12px;
-      width: 200px;
-      display: none;
-    }
-
-    .menu button {
-      width: 100%;
-      margin-top: 8px;
-      padding: 8px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .stars {
-      margin-top: 10px;
-      color: gold;
-    }
-
     /* CASE GRID */
     .case-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      padding: 20px;
+      gap: 25px;
+      padding: 30px;
+      text-align: center;
     }
 
     .case {
-      background: linear-gradient(145deg, #2a2650, #1a1735);
-      border-radius: 16px;
-      padding: 15px;
-      text-align: center;
       cursor: pointer;
       transition: 0.25s;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
     .case:hover {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+      transform: scale(1.08);
     }
 
-    .case-img {
+    .case img {
       width: 100%;
-      height: 120px;
-      object-fit: contain;
-      margin-bottom: 10px;
-    }
-
-    /* Glow ефекти */
-    .case:nth-child(1) .case-img {
-      filter: drop-shadow(0 0 12px #cd7f32);
-    }
-
-    .case:nth-child(2) .case-img {
-      filter: drop-shadow(0 0 12px #c0c0c0);
-    }
-
-    .case:nth-child(3) .case-img {
-      filter: drop-shadow(0 0 12px gold);
+      max-width: 140px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
     }
 
     .title {
+      margin-top: 10px;
       font-size: 18px;
       font-weight: bold;
-      margin-bottom: 8px;
     }
 
     .price {
-      margin-top: 10px;
       color: gold;
-      font-weight: bold;
+      margin-top: 5px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -122,45 +78,28 @@
 <body>
 
 <div class="header">
-
-  <div class="profile" onclick="toggleMenu()">
+  <div class="profile">
     <img id="avatar" class="avatar">
     <div id="name">User</div>
   </div>
-
-  <div class="menu" id="menu">
-
-    <div>🔊 Гучність</div>
-    <input type="range" min="0" max="100" value="50" style="width:100%">
-
-    <div class="stars">
-      ⭐ Баланс: <span id="balance">0</span>
-    </div>
-
-    <button onclick="addStars()">➕ Додати зірки</button>
-    <button onclick="openInventory()">🎒 Inventory</button>
-
-  </div>
-
 </div>
 
-<!-- CASES -->
 <div class="case-grid">
 
   <div class="case" onclick="openCase(1)">
-    <img src="bronze.png" class="case-img">
+    <img src="bronze.png">
     <div class="title">Bronze</div>
     <div class="price">1 ⭐</div>
   </div>
 
   <div class="case" onclick="openCase(3)">
-    <img src="silver.png" class="case-img">
+    <img src="silver.png">
     <div class="title">Silver</div>
     <div class="price">3 ⭐</div>
   </div>
 
   <div class="case" onclick="openCase(5)">
-    <img src="gold.png" class="case-img">
+    <img src="gold.png">
     <div class="title">Gold</div>
     <div class="price">5 ⭐</div>
   </div>
@@ -171,9 +110,6 @@
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  let stars = parseInt(localStorage.getItem("stars") || "0");
-  document.getElementById("balance").innerText = stars;
-
   const user = tg.initDataUnsafe.user;
 
   if (user) {
@@ -181,54 +117,9 @@
     if (user.photo_url) document.getElementById("avatar").src = user.photo_url;
   }
 
-  function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-  }
-
-  function addStars() {
-    stars += 10;
-    localStorage.setItem("stars", stars);
-    document.getElementById("balance").innerText = stars;
-  }
-
-  function openInventory() {
-    window.location.href = "inventory.html";
-  }
-
   function openCase(price) {
-    if (stars < price) {
-      alert("Недостатньо ⭐");
-      return;
-    }
-
-    stars -= price;
-    localStorage.setItem("stars", stars);
-    document.getElementById("balance").innerText = stars;
-
-    let items = JSON.parse(localStorage.getItem("items") || "[]");
-
-    let rewards = [
-      "AK-47 | Redline",
-      "M4A1-S | Cyrex",
-      "AWP | Asiimov",
-      "Knife | Doppler"
-    ];
-
-    let win = rewards[Math.floor(Math.random() * rewards.length)];
-
-    items.push({ name: win });
-    localStorage.setItem("items", JSON.stringify(items));
-
-    alert("Випало: " + win);
+    alert("Відкриття кейса за " + price + " ⭐");
   }
-
-  document.addEventListener("click", function(e) {
-    if (!e.target.closest(".profile")) {
-      document.getElementById("menu").style.display = "none";
-    }
-  });
-
 </script>
 
 </body>

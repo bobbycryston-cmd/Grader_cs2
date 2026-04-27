@@ -14,6 +14,7 @@
       color: white;
     }
 
+    /* HEADER */
     .header {
       display: flex;
       justify-content: flex-end;
@@ -62,21 +63,38 @@
       color: gold;
     }
 
-    .cases {
+    /* CASES GRID */
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
       padding: 20px;
     }
 
     .case {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
       cursor: pointer;
       transition: 0.2s;
     }
 
     .case:hover {
-      background: rgba(255,255,255,0.2);
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .case img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .case-title {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -107,17 +125,32 @@
 
 </div>
 
-<div class="cases">
-  <div class="case" onclick="openCase(1)">Case 1 ⭐</div>
-  <div class="case" onclick="openCase(3)">Case 3 ⭐</div>
-  <div class="case" onclick="openCase(5)">Case 5 ⭐</div>
+<!-- CASES -->
+<div class="case-grid">
+
+  <div class="case" onclick="openCase(1)">
+    <img src="https://i.imgur.com/3Q9ZQZl.png">
+    <div class="case-title">Bronze Case ⭐</div>
+  </div>
+
+  <div class="case" onclick="openCase(3)">
+    <img src="https://i.imgur.com/8Qf5Q6X.png">
+    <div class="case-title">Silver Case ⭐⭐</div>
+  </div>
+
+  <div class="case" onclick="openCase(5)">
+    <img src="https://i.imgur.com/1XQ9a7K.png">
+    <div class="case-title">Gold Case ⭐⭐⭐</div>
+  </div>
+
 </div>
 
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  let stars = 0;
+  let stars = parseInt(localStorage.getItem("stars") || "0");
+  document.getElementById("balance").innerText = stars;
 
   const user = tg.initDataUnsafe.user;
 
@@ -133,6 +166,7 @@
 
   function addStars() {
     stars += 10;
+    localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
   }
 
@@ -147,6 +181,7 @@
     }
 
     stars -= price;
+    localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
 
     let items = JSON.parse(localStorage.getItem("items") || "[]");

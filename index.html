@@ -14,7 +14,6 @@
       color: white;
     }
 
-    /* 🔥 HEADER BLOCK */
     .header {
       display: flex;
       justify-content: flex-end;
@@ -88,7 +87,6 @@
       cursor: pointer;
     }
 
-    
     .case-grid {
       display: flex;
       justify-content: center;
@@ -105,7 +103,6 @@
     .case:hover {
       transform: scale(1.05);
     }
-
 
     .case-box {
       border-radius: 18px;
@@ -127,7 +124,6 @@
       object-fit: contain;
     }
 
-  
     .case:nth-child(1) .case-box {
       border: 2px solid #cd7f32;
       box-shadow: 0 0 12px #cd7f32;
@@ -176,9 +172,11 @@
   </div>
 
   <div class="menu" id="menu">
-    <div> Гучність</div>
+    <div>🔊 Гучність</div>
     <input type="range" min="0" max="100" value="50" style="width:100%">
-    <button onclick="openInventory()"> Inventory</button>
+
+    <button onclick="openInventory()">🎒 Inventory</button>
+    <button onclick="openUpgrade()">⚡ Upgrade</button>
   </div>
 </div>
 
@@ -231,6 +229,10 @@
   }
 
   function openTopUp() {}
+
+  function openUpgrade() {
+    // поки нічого не робить
+  }
 
   function toggleMenu() {
     const menu = document.getElementById("menu");

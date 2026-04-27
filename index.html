@@ -156,6 +156,7 @@
     }
 
     .promo-box {
+      position: relative;
       background: #111;
       padding: 15px;
       border-radius: 14px;
@@ -191,12 +192,22 @@
     }
 
     .promo-btn {
-      background: orange;
+      background: black;
+      color: white;
       border: none;
       padding: 6px 10px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 20px;
+      color: white;
     }
   </style>
 </head>
@@ -211,7 +222,6 @@
     </div>
 
     <button class="add-btn" onclick="openTopUp()">+</button>
-
     <button class="add-btn" onclick="openPromo()">🎟</button>
 
     <div class="profile" onclick="toggleMenu()">
@@ -282,6 +292,9 @@
 <!-- PROMO -->
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
+
+    <div class="close-btn" onclick="closePromo()">✖</div>
+
     <div class="promo-title">Промокод</div>
 
     <div class="promo-input-box">
@@ -289,6 +302,7 @@
       <input type="text" placeholder="Введіть промокод" id="promoInput">
       <button class="promo-btn" onclick="applyPromo()">Застосувати</button>
     </div>
+
   </div>
 </div>
 
@@ -331,16 +345,19 @@
     alert("Кейс відкрито ✅");
   }
 
-  // PROMO LOGIC
-
   function openPromo() {
     document.getElementById("promoModal").style.display = "block";
+  }
+
+  function closePromo() {
+    document.getElementById("promoModal").style.display = "none";
   }
 
   const promoCodes = {
     "FREE10": 10,
     "BONUS50": 50,
-    "CS2": 5
+    "CS2": 5,
+    "SLOOBY": 100
   };
 
   function applyPromo() {
@@ -367,7 +384,7 @@
       localStorage.setItem("usedPromo", JSON.stringify(used));
 
       alert("Промокод активовано ✅ +" + promoCodes[code] + " ⭐");
-      document.getElementById("promoModal").style.display = "none";
+      closePromo();
     } else {
       alert("Невірний промокод ❌");
     }

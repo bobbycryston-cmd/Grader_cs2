@@ -87,15 +87,17 @@
       cursor: pointer;
     }
 
-    /* 🔥 GRID 2 РЯДИ */
+    /* 🔥 НОРМАЛЬНИЙ РОЗМІР */
     .case-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, 110px);
+      justify-content: center;
       gap: 20px;
       padding: 20px;
     }
 
     .case {
+      width: 110px;
       cursor: pointer;
       transition: 0.25s;
     }
@@ -106,13 +108,13 @@
 
     .case-box {
       border-radius: 18px;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
       background: rgba(255,255,255,0.03);
     }
 
     .case-img-box {
-      height: 110px;
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -124,25 +126,26 @@
       object-fit: contain;
     }
 
-    /* 🔥 РАМКИ */
-    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 12px #cd7f32; }
-    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 12px #c0c0c0; }
-    .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 12px gold; }
+    /* старі */
+    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
+    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
+    .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
 
-    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; box-shadow: 0 0 12px #7f8cff; }
-    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 12px #ff3c6f; }
-    .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 12px #00eaff; }
+    /* нові */
+    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; box-shadow: 0 0 10px #7f8cff; }
+    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
+    .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
 
     .title {
-      margin-top: 8px;
-      font-size: 16px;
+      margin-top: 6px;
+      font-size: 14px;
       font-weight: bold;
     }
 
     .price {
       color: gold;
-      margin-top: 3px;
-      font-size: 14px;
+      margin-top: 2px;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -175,10 +178,9 @@
 
 <div class="case-grid">
 
-  <!-- OLD -->
   <div class="case" onclick="openCase(1)">
     <div class="case-box">
-      <img src="bronze.png">
+      <div class="case-img-box"><img src="bronze.png"></div>
       <div class="title">Bronze</div>
       <div class="price">1 ⭐</div>
     </div>
@@ -186,7 +188,7 @@
 
   <div class="case" onclick="openCase(3)">
     <div class="case-box">
-      <img src="silver.png">
+      <div class="case-img-box"><img src="silver.png"></div>
       <div class="title">Silver</div>
       <div class="price">3 ⭐</div>
     </div>
@@ -194,16 +196,15 @@
 
   <div class="case" onclick="openCase(5)">
     <div class="case-box">
-      <img src="gold.png">
+      <div class="case-img-box"><img src="gold.png"></div>
       <div class="title">Gold</div>
       <div class="price">5 ⭐</div>
     </div>
   </div>
 
-  <!-- NEW -->
   <div class="case" onclick="openCase(10)">
     <div class="case-box">
-      <img src="platinum.png">
+      <div class="case-img-box"><img src="platinum.png"></div>
       <div class="title">Platinum</div>
       <div class="price">10 ⭐</div>
     </div>
@@ -211,7 +212,7 @@
 
   <div class="case" onclick="openCase(25)">
     <div class="case-box">
-      <img src="ruby.png">
+      <div class="case-img-box"><img src="ruby.png"></div>
       <div class="title">Ruby</div>
       <div class="price">25 ⭐</div>
     </div>
@@ -219,7 +220,7 @@
 
   <div class="case" onclick="openCase(50)">
     <div class="case-box">
-      <img src="diamond.png">
+      <div class="case-img-box"><img src="diamond.png"></div>
       <div class="title">Diamond</div>
       <div class="price">50 ⭐</div>
     </div>

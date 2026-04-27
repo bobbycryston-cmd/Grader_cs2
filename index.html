@@ -14,7 +14,6 @@
       color: white;
     }
 
-    /* HEADER */
     .header {
       display: flex;
       justify-content: flex-end;
@@ -22,7 +21,6 @@
       position: relative;
     }
 
-    /* PROFILE */
     .profile {
       display: flex;
       align-items: center;
@@ -39,7 +37,6 @@
       border-radius: 50%;
     }
 
-    /* MENU */
     .menu {
       position: absolute;
       top: 60px;
@@ -63,7 +60,6 @@
     .stars {
       margin-top: 10px;
       color: gold;
-      cursor: pointer;
     }
 
     .cases {
@@ -76,6 +72,11 @@
       margin-bottom: 10px;
       border-radius: 10px;
       cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .case:hover {
+      background: rgba(255,255,255,0.2);
     }
   </style>
 </head>
@@ -90,6 +91,7 @@
   </div>
 
   <div class="menu" id="menu">
+
     <div>🔊 Гучність</div>
     <input type="range" min="0" max="100" value="50" style="width:100%">
 
@@ -100,14 +102,15 @@
     <button onclick="addStars()">➕ Додати зірки</button>
 
     <button onclick="openInventory()">🎒 Inventory</button>
+
   </div>
 
 </div>
 
 <div class="cases">
-  <div class="case">Case 1 ⭐</div>
-  <div class="case">Case 3 ⭐</div>
-  <div class="case">Case 5 ⭐</div>
+  <div class="case" onclick="openCase(1)">Case 1 ⭐</div>
+  <div class="case" onclick="openCase(3)">Case 3 ⭐</div>
+  <div class="case" onclick="openCase(5)">Case 5 ⭐</div>
 </div>
 
 <script>
@@ -137,11 +140,38 @@
     window.location.href = "inventory.html";
   }
 
+  function openCase(price) {
+    if (stars < price) {
+      alert("Недостатньо ⭐");
+      return;
+    }
+
+    stars -= price;
+    document.getElementById("balance").innerText = stars;
+
+    let items = JSON.parse(localStorage.getItem("items") || "[]");
+
+    let rewards = [
+      "AK-47 | Redline",
+      "M4A1-S | Cyrex",
+      "AWP | Asiimov",
+      "Knife | Doppler"
+    ];
+
+    let win = rewards[Math.floor(Math.random() * rewards.length)];
+
+    items.push({ name: win });
+    localStorage.setItem("items", JSON.stringify(items));
+
+    alert("Тобі випало: " + win);
+  }
+
   document.addEventListener("click", function(e) {
     if (!e.target.closest(".profile")) {
       document.getElementById("menu").style.display = "none";
     }
   });
+
 </script>
 
 </body>

@@ -9,7 +9,7 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial;  
+      font-family: Arial;
       background: radial-gradient(circle at top, #1a1735, #090816 80%);
       color: white;
     }
@@ -49,6 +49,9 @@
       height: 34px;
       border-radius: 8px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .profile {
@@ -122,13 +125,12 @@
       object-fit: contain;
     }
 
-    /* рамки */
-    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; }
-    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; }
-    .case:nth-child(3) .case-box { border: 2px solid gold; }
-    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; }
-    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; }
-    .case:nth-child(6) .case-box { border: 2px solid #00eaff; }
+    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
+    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
+    .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
+    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; box-shadow: 0 0 10px #7f8cff; }
+    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
+    .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
 
     .title {
       margin-top: 6px;
@@ -142,7 +144,8 @@
       font-size: 13px;
     }
 
-    /* ПРОМО */
+    /* PROMO */
+
     .promo-modal {
       position: fixed;
       top: 20px;
@@ -158,6 +161,7 @@
       padding: 15px;
       border-radius: 14px;
       width: 300px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
     .promo-title {
@@ -168,10 +172,15 @@
 
     .promo-input-box {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      gap: 8px;
       background: rgba(255,255,255,0.05);
       padding: 6px;
       border-radius: 10px;
+    }
+
+    .promo-icon {
+      font-size: 18px;
     }
 
     .promo-input-box input {
@@ -186,16 +195,20 @@
       background: #ff9f43;
       color: black;
       border: none;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
+      flex-shrink: 0;
     }
 
     .close-btn {
       position: absolute;
-      top: 5px;
-      right: 10px;
+      top: 10px;
+      right: 15px;
       cursor: pointer;
+      font-size: 20px;
+      color: white;
     }
   </style>
 </head>
@@ -209,6 +222,7 @@
       <span id="balance">0</span> ⭐
     </div>
 
+    <button class="add-btn" onclick="openTopUp()">+</button>
     <button class="add-btn" onclick="openPromo()">🎟</button>
 
     <div class="profile" onclick="toggleMenu()">
@@ -219,12 +233,14 @@
   </div>
 
   <div class="menu" id="menu">
+    <div>🔊 Гучність</div>
+    <input type="range" min="0" max="100" value="50" style="width:100%">
     <button onclick="openInventory()">🎒 Inventory</button>
+    <button onclick="openUpgrade()">⚡ Upgrade</button>
   </div>
 </div>
 
 <div class="case-grid">
-
   <div class="case" onclick="openCase(1)">
     <div class="case-box">
       <div class="case-img-box"><img src="bronze.png"></div>
@@ -272,17 +288,16 @@
       <div class="price">50 ⭐</div>
     </div>
   </div>
-
 </div>
 
-<!-- ПРОМО -->
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
     <div class="close-btn" onclick="closePromo()">✖</div>
     <div class="promo-title">Промокод</div>
 
     <div class="promo-input-box">
-      <input type="text" id="promoInput" placeholder="Введіть код">
+      <span class="promo-icon">🎟</span>
+      <input type="text" placeholder="Введіть промокод" id="promoInput">
       <button class="promo-btn" onclick="applyPromo()">Застосувати</button>
     </div>
   </div>
@@ -295,48 +310,37 @@
   let stars = parseInt(localStorage.getItem("stars") || "0");
   document.getElementById("balance").innerText = stars;
 
+  const user = tg.initDataUnsafe.user;
+
+  if (user) {
+    document.getElementById("name").innerText = user.first_name;
+    if (user.photo_url) document.getElementById("avatar").src = user.photo_url;
+  }
+
+  function openTopUp() {}
+  function openUpgrade() {}
+
   function toggleMenu() {
-    let m = document.getElementById("menu");
-    m.style.display = m.style.display === "block" ? "none" : "block";
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
 
   function openInventory() {
     window.location.href = "inventory.html";
   }
 
-  function openPromo() {
-    document.getElementById("promoModal").style.display = "block";
-  }
-
-  function closePromo() {
-    document.getElementById("promoModal").style.display = "none";
-  }
-
-  function applyPromo() {
-    let code = document.getElementById("promoInput").value.toUpperCase();
-
-    if (code === "SLOOBY") {
-      stars += 100;
-      localStorage.setItem("stars", stars);
-      document.getElementById("balance").innerText = stars;
-      alert("+100 ⭐");
-      closePromo();
-    } else {
-      alert("❌ Невірний код");
-    }
-  }
-
+  // 🎁 ДРОПИ
   const drops = [
-    { name: "Glock-18 Sand Dune", chance: 18, price: 1 },
-    { name: "P250 Boreal Forest", chance: 15, price: 1 },
-    { name: "UMP-45 Urban DDPAT", chance: 14, price: 1 },
-    { name: "MP9 Sand Scale", chance: 12, price: 1 },
-    { name: "Nova Predator", chance: 10, price: 2 },
-    { name: "FAMAS Survivor Z", chance: 9, price: 2 },
-    { name: "Galil AR Kami", chance: 8, price: 2 },
-    { name: "AK-47 Elite Build", chance: 6, price: 3 },
-    { name: "M4A1-S Nitro", chance: 5, price: 3 },
-    { name: "AWP Pit Viper", chance: 3, price: 5 }
+    { name: "Glock-18 Sand Dune", chance: 18 },
+    { name: "P250 Boreal Forest", chance: 15 },
+    { name: "UMP-45 Urban DDPAT", chance: 14 },
+    { name: "MP9 Sand Scale", chance: 12 },
+    { name: "Nova Predator", chance: 10 },
+    { name: "FAMAS Survivor Z", chance: 9 },
+    { name: "Galil AR Kami", chance: 8 },
+    { name: "AK-47 Elite Build", chance: 6 },
+    { name: "M4A1-S Nitro", chance: 5 },
+    { name: "AWP Pit Viper", chance: 3 }
   ];
 
   function getDrop() {
@@ -350,7 +354,10 @@
   }
 
   function openCase(price) {
-    if (stars < price) return alert("Недостатньо ⭐");
+    if (stars < price) {
+      alert("Недостатньо ⭐");
+      return;
+    }
 
     stars -= price;
     localStorage.setItem("stars", stars);
@@ -364,6 +371,57 @@
 
     alert("🎉 Тобі випало: " + item.name);
   }
+
+  function openPromo() {
+    document.getElementById("promoModal").style.display = "block";
+  }
+
+  function closePromo() {
+    document.getElementById("promoModal").style.display = "none";
+  }
+
+  const promoCodes = {
+    "FREE10": 10,
+    "BONUS50": 50,
+    "CS2": 5,
+    "SLOOBY": 100
+  };
+
+  function applyPromo() {
+    let code = document.getElementById("promoInput").value.trim().toUpperCase();
+
+    if (!code) {
+      alert("Введи промокод");
+      return;
+    }
+
+    let used = JSON.parse(localStorage.getItem("usedPromo") || "[]");
+
+    if (used.includes(code)) {
+      alert("Цей промокод вже використаний ❌");
+      return;
+    }
+
+    if (promoCodes[code]) {
+      stars += promoCodes[code];
+      localStorage.setItem("stars", stars);
+      document.getElementById("balance").innerText = stars;
+
+      used.push(code);
+      localStorage.setItem("usedPromo", JSON.stringify(used));
+
+      alert("Промокод активовано ✅ +" + promoCodes[code] + " ⭐");
+      closePromo();
+    } else {
+      alert("Невірний промокод ❌");
+    }
+  }
+
+  document.addEventListener("click", function(e) {
+    if (!e.target.closest(".profile")) {
+      document.getElementById("menu").style.display = "none";
+    }
+  });
 </script>
 
 </body>

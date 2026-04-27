@@ -10,7 +10,7 @@
     body {
       margin: 0;
       font-family: Arial;
-      background: linear-gradient(135deg, #0f0c29, #302b63);
+      background: radial-gradient(circle at top, #1f1b3a, #0b0a1a 80%);
       color: white;
     }
 
@@ -62,33 +62,47 @@
       color: gold;
     }
 
-    /* CASES */
+    /* CASE GRID */
     .case-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 15px;
       padding: 20px;
     }
 
     .case {
-      background: rgba(255,255,255,0.08);
-      border-radius: 14px;
+      background: linear-gradient(145deg, #2a2650, #1a1735);
+      border-radius: 16px;
       padding: 15px;
       text-align: center;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
     .case:hover {
-      transform: scale(1.05);
-      background: rgba(255,255,255,0.15);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
     }
 
     .case-img {
       width: 100%;
-      height: 90px;
+      height: 120px;
       object-fit: contain;
       margin-bottom: 10px;
+    }
+
+    /* Glow ефекти */
+    .case:nth-child(1) .case-img {
+      filter: drop-shadow(0 0 12px #cd7f32);
+    }
+
+    .case:nth-child(2) .case-img {
+      filter: drop-shadow(0 0 12px #c0c0c0);
+    }
+
+    .case:nth-child(3) .case-img {
+      filter: drop-shadow(0 0 12px gold);
     }
 
     .title {

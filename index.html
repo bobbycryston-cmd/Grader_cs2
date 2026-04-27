@@ -87,15 +87,15 @@
       cursor: pointer;
     }
 
+    /* 🔥 GRID 2 РЯДИ */
     .case-grid {
-      display: flex;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       padding: 20px;
     }
 
     .case {
-      width: 110px;
       cursor: pointer;
       transition: 0.25s;
     }
@@ -124,20 +124,14 @@
       object-fit: contain;
     }
 
-    .case:nth-child(1) .case-box {
-      border: 2px solid #cd7f32;
-      box-shadow: 0 0 12px #cd7f32;
-    }
+    /* 🔥 РАМКИ */
+    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 12px #cd7f32; }
+    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 12px #c0c0c0; }
+    .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 12px gold; }
 
-    .case:nth-child(2) .case-box {
-      border: 2px solid #c0c0c0;
-      box-shadow: 0 0 12px #c0c0c0;
-    }
-
-    .case:nth-child(3) .case-box {
-      border: 2px solid gold;
-      box-shadow: 0 0 12px gold;
-    }
+    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; box-shadow: 0 0 12px #7f8cff; }
+    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 12px #ff3c6f; }
+    .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 12px #00eaff; }
 
     .title {
       margin-top: 8px;
@@ -174,7 +168,6 @@
   <div class="menu" id="menu">
     <div>🔊 Гучність</div>
     <input type="range" min="0" max="100" value="50" style="width:100%">
-
     <button onclick="openInventory()">🎒 Inventory</button>
     <button onclick="openUpgrade()">⚡ Upgrade</button>
   </div>
@@ -182,11 +175,10 @@
 
 <div class="case-grid">
 
+  <!-- OLD -->
   <div class="case" onclick="openCase(1)">
     <div class="case-box">
-      <div class="case-img-box">
-        <img src="bronze.png">
-      </div>
+      <img src="bronze.png">
       <div class="title">Bronze</div>
       <div class="price">1 ⭐</div>
     </div>
@@ -194,9 +186,7 @@
 
   <div class="case" onclick="openCase(3)">
     <div class="case-box">
-      <div class="case-img-box">
-        <img src="silver.png">
-      </div>
+      <img src="silver.png">
       <div class="title">Silver</div>
       <div class="price">3 ⭐</div>
     </div>
@@ -204,11 +194,34 @@
 
   <div class="case" onclick="openCase(5)">
     <div class="case-box">
-      <div class="case-img-box">
-        <img src="gold.png">
-      </div>
+      <img src="gold.png">
       <div class="title">Gold</div>
       <div class="price">5 ⭐</div>
+    </div>
+  </div>
+
+  <!-- NEW -->
+  <div class="case" onclick="openCase(10)">
+    <div class="case-box">
+      <img src="platinum.png">
+      <div class="title">Platinum</div>
+      <div class="price">10 ⭐</div>
+    </div>
+  </div>
+
+  <div class="case" onclick="openCase(25)">
+    <div class="case-box">
+      <img src="ruby.png">
+      <div class="title">Ruby</div>
+      <div class="price">25 ⭐</div>
+    </div>
+  </div>
+
+  <div class="case" onclick="openCase(50)">
+    <div class="case-box">
+      <img src="diamond.png">
+      <div class="title">Diamond</div>
+      <div class="price">50 ⭐</div>
     </div>
   </div>
 
@@ -229,10 +242,7 @@
   }
 
   function openTopUp() {}
-
-  function openUpgrade() {
-    // поки нічого не робить
-  }
+  function openUpgrade() {}
 
   function toggleMenu() {
     const menu = document.getElementById("menu");

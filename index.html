@@ -122,69 +122,18 @@
       object-fit: contain;
     }
 
+    /* Рамки кейсів */
     .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
     .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
     .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
     .case:nth-child(4) .case-box { border: 2px solid #7f8cff; box-shadow: 0 0 10px #7f8cff; }
     .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
     .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
-
     .purple-case { border: 2px solid #a855f7; box-shadow: 0 0 12px #a855f7; }
     .white-case { border: 2px solid #ffffff; box-shadow: 0 0 12px #ffffff; }
 
     .title { margin-top: 6px; font-size: 14px; font-weight: bold; }
     .price { color: gold; margin-top: 2px; font-size: 13px; }
-
-    .promo-modal {
-      position: fixed;
-      top: 20px; left: 50%;
-      transform: translateX(-50%);
-      display: none;
-      z-index: 1000;
-    }
-
-    .promo-box {
-      position: relative;
-      background: #111;
-      padding: 15px;
-      border-radius: 14px;
-      width: 300px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-
-    .promo-input-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.05);
-      padding: 6px;
-      border-radius: 10px;
-    }
-
-    .promo-input-box input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: white;
-      outline: none;
-    }
-
-    .promo-btn {
-      background: #ff9f43;
-      color: black;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 15px;
-      cursor: pointer;
-      font-size: 20px;
-    }
 
     #rouletteModal {
       position: fixed;
@@ -245,7 +194,7 @@
       width: 80px;
       height: 60px;
       object-fit: contain;
-      border-radius: 8px; /* ЗАОКРУГЛЕННЯ У РУЛЕТЦІ */
+      border-radius: 8px;
     }
 
     #skinsList {
@@ -264,7 +213,7 @@
       width: 100%;
       height: 60px;
       object-fit: contain;
-      border-radius: 8px; /* ЗАОКРУГЛЕННЯ ЗНИЗУ */
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -276,7 +225,6 @@
     <div class="balance-box">
       <span id="balance">0</span> ⭐
     </div>
-    <button class="add-btn" onclick="openTopUp()">+</button>
     <button class="add-btn" onclick="openPromo()">🎟</button>
     <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar">
@@ -285,10 +233,9 @@
   </div>
 
   <div class="menu" id="menu">
-    <div>🔊 Гучність</div>
-    <input type="range" min="0" max="100" value="50" style="width:100%">
+    <div style="font-size: 12px; margin-bottom: 5px;">🔊 Volume</div>
+    <input type="range" id="volumeSlider" min="0" max="100" value="50" style="width:100%">
     <button onclick="openInventory()">🎒 Inventory</button>
-    <button onclick="openUpgrade()">⚡ Upgrade</button>
   </div>
 </div>
 
@@ -317,17 +264,6 @@
   </div>
 </div>
 
-<div class="promo-modal" id="promoModal">
-  <div class="promo-box">
-    <div class="close-btn" onclick="closePromo()">✖</div>
-    <div style="text-align:center; margin-bottom:10px; font-weight:bold;">Промокод</div>
-    <div class="promo-input-box">
-      <input type="text" placeholder="Введіть код" id="promoInput">
-      <button class="promo-btn" onclick="applyPromo()">OK</button>
-    </div>
-  </div>
-</div>
-
 <div id="rouletteModal">
   <div class="roulette-content">
     <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; font-size:20px; cursor:pointer;">✖</div>
@@ -347,6 +283,15 @@
   const tg = window.Telegram.WebApp;
   tg.expand();
 
+  const openSound = new Audio('case_open.mp3'); 
+  const volumeSlider = document.getElementById('volumeSlider');
+
+  function playOpenSound() {
+    openSound.volume = volumeSlider.value / 100;
+    openSound.currentTime = 0;
+    openSound.play().catch(e => console.log("Sound error:", e));
+  }
+
   let stars = parseInt(localStorage.getItem("stars") || "0");
   document.getElementById("balance").innerText = stars;
 
@@ -354,11 +299,6 @@
   if (user) {
     document.getElementById("name").innerText = user.first_name;
     if (user.photo_url) document.getElementById("avatar").src = user.photo_url;
-  }
-
-  function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
 
   const glockSkins = [
@@ -411,6 +351,11 @@
     }
   }
 
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
   function startRoulette(type) {
     const modal = document.getElementById("rouletteModal");
     const track = document.getElementById("rouletteTrack");
@@ -441,6 +386,7 @@
     if (isSpinning) return;
     if (stars < 15) { alert("Недостатньо ⭐"); return; }
 
+    playOpenSound();
     stars -= 15;
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
@@ -465,7 +411,7 @@
     const containerWidth = document.querySelector('.roulette-window').offsetWidth;
     const offset = (winPos * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
 
-    track.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)";
+    track.style.transition = "transform 8s cubic-bezier(0.15, 0, 0.15, 1)";
     track.style.transform = `translateX(-${offset}px)`;
 
     setTimeout(() => {
@@ -475,43 +421,25 @@
       localStorage.setItem("items", JSON.stringify(inv));
       alert("🎉 Випало: " + fullName);
       isSpinning = false;
-      track.style.transition = "none";
-      track.style.transform = "translateX(0)";
-    }, 4500);
+    }, 8500);
   }
 
-  function closeRoulette() {
-    if (isSpinning) return;
-    document.getElementById("rouletteModal").style.display = "none";
-  }
+  function closeRoulette() { if (!isSpinning) document.getElementById("rouletteModal").style.display = "none"; }
+  function openInventory() { window.location.href = "inventory.html"; }
+  function openCase(p) { if (stars >= p) { stars -= p; localStorage.setItem("stars", stars); document.getElementById("balance").innerText = stars; alert("🎉 Випав предмет!"); } else { alert("Недостатньо ⭐"); } }
 
-  function openPromo() { document.getElementById("promoModal").style.display = "block"; }
-  function closePromo() { document.getElementById("promoModal").style.display = "none"; }
-  
-  function applyPromo() {
-    let input = document.getElementById("promoInput").value.trim();
-    if (input === "+") {
+  function openPromo() {
+    let code = prompt("Введіть промокод:");
+    if (code === "+") {
       stars += 100;
       localStorage.setItem("stars", stars);
       document.getElementById("balance").innerText = stars;
       alert("Додано 100 ⭐");
-      return;
     }
-    alert("Невірний код ❌");
   }
-
-  function openCase(p) {
-    if (stars < p) { alert("Недостатньо ⭐"); return; }
-    stars -= p;
-    localStorage.setItem("stars", stars);
-    document.getElementById("balance").innerText = stars;
-    alert("🎉 Випав предмет!");
-  }
-
-  function openInventory() { window.location.href = "inventory.html"; }
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".profile")) document.getElementById("menu").style.display = "none";
+    if (!e.target.closest(".profile") && !e.target.closest(".menu")) document.getElementById("menu").style.display = "none";
   });
 </script>
 </body>

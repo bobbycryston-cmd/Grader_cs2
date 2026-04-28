@@ -85,7 +85,7 @@
       border-radius: 8px;
       cursor: pointer;
       color: black;
-      background: #fff; /* Білі кнопки в меню для контрасту */
+      background: #fff;
     }
 
     .case-grid {
@@ -122,7 +122,7 @@
       object-fit: contain;
     }
 
-    /* Рамки */
+    /* Рамки кейсів */
     .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
     .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
     .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
@@ -135,7 +135,7 @@
     .title { margin-top: 6px; font-size: 14px; font-weight: bold; }
     .price { color: gold; margin-top: 2px; font-size: 13px; }
 
-    /* ОРИГІНАЛЬНЕ МЕНЮ ПРОМОКОДУ */
+    /* Дизайн модального вікна промокоду */
     .promo-modal {
       position: fixed;
       top: 20px; left: 50%;
@@ -151,6 +151,7 @@
       border-radius: 14px;
       width: 300px;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      border: 1px solid #333;
     }
 
     .promo-input-box {
@@ -247,7 +248,7 @@
       border-radius: 8px;
     }
 
-    /* КНОПКА OPEN - ЧОРНИЙ КОЛІР ТЕКСТУ */
+    /* Кнопка OPEN - Текст чорний */
     #openBtn {
       width: 100%;
       padding: 15px;
@@ -256,7 +257,7 @@
       border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
-      color: black !important; /* ПРИМУСОВО ЧОРНИЙ */
+      color: black !important;
       font-size: 16px;
     }
 
@@ -342,6 +343,13 @@
   tg.expand();
 
   const openSound = new Audio('case_open.mp3');
+  const volumeSlider = document.getElementById('volumeSlider');
+
+  // Зв'язуємо повзунок з гучністю відразу
+  volumeSlider.addEventListener('input', () => {
+    openSound.volume = volumeSlider.value / 100;
+  });
+
   let stars = parseInt(localStorage.getItem("stars") || "0");
   document.getElementById("balance").innerText = stars;
 
@@ -443,8 +451,12 @@
 
   function spinRoulette(type) {
     if (isSpinning || stars < 15) return;
-    openSound.volume = document.getElementById("volumeSlider").value / 100;
-    openSound.play();
+
+    // Граємо звук з поточною гучністю
+    openSound.volume = volumeSlider.value / 100;
+    openSound.currentTime = 0;
+    openSound.play().catch(e => console.log("Sound play failed:", e));
+
     stars -= 15;
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;

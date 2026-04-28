@@ -132,7 +132,6 @@
     .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
     .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
 
-    /* НОВИЙ ФІОЛЕТОВИЙ КЕЙС */
     .purple-case {
       border: 2px solid #a855f7;
       box-shadow: 0 0 12px #a855f7;
@@ -214,6 +213,20 @@
       font-size: 20px;
       color: white;
     }
+
+    /* ФІКС ЦЕНТРУВАННЯ РУЛЕТКИ */
+    #rouletteModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+    }
   </style>
 </head>
 
@@ -221,19 +234,15 @@
 
 <div class="header">
   <div class="header-box">
-
     <div class="balance-box">
       <span id="balance">0</span> ⭐
     </div>
-
     <button class="add-btn" onclick="openTopUp()">+</button>
     <button class="add-btn" onclick="openPromo()">🎟</button>
-
     <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar">
       <div id="name">User</div>
     </div>
-
   </div>
 
   <div class="menu" id="menu">
@@ -245,8 +254,6 @@
 </div>
 
 <div class="case-grid">
-
-  <!-- СТАРІ КЕЙСИ -->
   <div class="case" onclick="openCase(1)">
     <div class="case-box">
       <div class="case-img-box"><img src="bronze.png"></div>
@@ -254,7 +261,6 @@
       <div class="price">1 ⭐</div>
     </div>
   </div>
-
   <div class="case" onclick="openCase(3)">
     <div class="case-box">
       <div class="case-img-box"><img src="silver.png"></div>
@@ -262,7 +268,6 @@
       <div class="price">3 ⭐</div>
     </div>
   </div>
-
   <div class="case" onclick="openCase(5)">
     <div class="case-box">
       <div class="case-img-box"><img src="gold.png"></div>
@@ -270,7 +275,6 @@
       <div class="price">5 ⭐</div>
     </div>
   </div>
-
   <div class="case" onclick="openCase(10)">
     <div class="case-box">
       <div class="case-img-box"><img src="platinum.png"></div>
@@ -278,7 +282,6 @@
       <div class="price">10 ⭐</div>
     </div>
   </div>
-
   <div class="case" onclick="openCase(25)">
     <div class="case-box">
       <div class="case-img-box"><img src="ruby.png"></div>
@@ -286,7 +289,6 @@
       <div class="price">25 ⭐</div>
     </div>
   </div>
-
   <div class="case" onclick="openCase(50)">
     <div class="case-box">
       <div class="case-img-box"><img src="diamond.png"></div>
@@ -295,7 +297,6 @@
     </div>
   </div>
 
-  <!-- НОВИЙ КЕЙС -->
   <div class="case" onclick="startRoulette()">
     <div class="case-box purple-case">
       <div class="case-img-box"><img src="glock_case.png"></div>
@@ -303,15 +304,12 @@
       <div class="price">15 ⭐</div>
     </div>
   </div>
-
 </div>
 
-<!-- ПРОМО -->
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
     <div class="close-btn" onclick="closePromo()">✖</div>
     <div class="promo-title">Промокод</div>
-
     <div class="promo-input-box">
       <span class="promo-icon">🎟</span>
       <input type="text" placeholder="Введіть промокод" id="promoInput">
@@ -319,28 +317,22 @@
     </div>
   </div>
 </div>
-<div id="rouletteModal" style="display:none;">
 
-  <div style="width:95%; max-width:700px; background:#111; border-radius:16px; padding:20px; position:relative;">
-
+<div id="rouletteModal">
+  <div style="width:95%; max-width:700px; background:#111; border-radius:16px; padding:20px; position:relative; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
     <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; font-size:20px; cursor:pointer;">✖</div>
-
     <div style="position:relative; margin-bottom:10px;">
-      <div style="position:absolute; left:50%; transform:translateX(-50%); top:0; font-size:22px;">▼</div>
-      <div style="height:2px; background:#fff; margin-top:14px;"></div>
+      <div style="position:absolute; left:50%; transform:translateX(-50%); top:0; font-size:22px; z-index:10; color:#ff9f43;">▼</div>
+      <div style="height:2px; background:#333; margin-top:14px;"></div>
     </div>
-
-    <div style="overflow:hidden; border-radius:10px; border:2px solid #333;">
-      <div id="rouletteTrack" style="display:flex; gap:10px; padding:15px; transition:4s cubic-bezier(0.1,0.7,0.1,1);"></div>
+    <div style="overflow:hidden; border-radius:10px; border:2px solid #333; background:#050505;">
+      <div id="rouletteTrack" style="display:flex; gap:10px; padding:15px; transition:none;"></div>
     </div>
-
     <button onclick="spinRoulette()" 
-      style="margin-top:15px; width:100%; padding:12px; border:none; border-radius:10px; background:#ff9f43; font-weight:bold; cursor:pointer;">
-      OPEN
+      style="margin-top:15px; width:100%; padding:12px; border:none; border-radius:10px; background:#ff9f43; font-weight:bold; cursor:pointer; color:black; font-size:16px;">
+      OPEN (15 ⭐)
     </button>
-
-    <div id="skinsList" style="margin-top:15px; max-height:200px; overflow-y:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:10px;"></div>
-
+    <div id="skinsList" style="margin-top:15px; max-height:200px; overflow-y:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px;"></div>
   </div>
 </div>
 
@@ -352,7 +344,6 @@
   document.getElementById("balance").innerText = stars;
 
   const user = tg.initDataUnsafe.user;
-
   if (user) {
     document.getElementById("name").innerText = user.first_name;
     if (user.photo_url) document.getElementById("avatar").src = user.photo_url;
@@ -386,7 +377,6 @@
   function getDrop() {
     let rand = Math.random() * 100;
     let sum = 0;
-
     for (let item of drops) {
       sum += item.chance;
       if (rand <= sum) return item;
@@ -394,76 +384,42 @@
   }
 
   function openCase(price) {
-    if (stars < price) {
-      alert("Недостатньо ⭐");
-      return;
-    }
-
+    if (stars < price) { alert("Недостатньо ⭐"); return; }
     stars -= price;
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
-
     const item = getDrop();
-
     let items = JSON.parse(localStorage.getItem("items") || "[]");
     items.push(item);
     localStorage.setItem("items", JSON.stringify(items));
-
     alert("🎉 Тобі випало: " + item.name);
   }
 
-  function openPromo() {
-    document.getElementById("promoModal").style.display = "block";
-  }
+  function openPromo() { document.getElementById("promoModal").style.display = "block"; }
+  function closePromo() { document.getElementById("promoModal").style.display = "none"; }
 
-  function closePromo() {
-    document.getElementById("promoModal").style.display = "none";
-  }
-
-  const promoCodes = {
-    "FREE10": 10,
-    "BONUS50": 50,
-    "CS2": 5,
-    "SLOOBY": 100
-  };
+  const promoCodes = { "FREE10": 10, "BONUS50": 50, "CS2": 5, "SLOOBY": 100 };
 
   function applyPromo() {
     let code = document.getElementById("promoInput").value.trim().toUpperCase();
-
-    if (!code) {
-      alert("Введи промокод");
-      return;
-    }
-
+    if (!code) { alert("Введи промокод"); return; }
     let used = JSON.parse(localStorage.getItem("usedPromo") || "[]");
-
-    if (used.includes(code)) {
-      alert("Цей промокод вже використаний ❌");
-      return;
-    }
-
+    if (used.includes(code)) { alert("Цей промокод вже використаний ❌"); return; }
     if (promoCodes[code]) {
       stars += promoCodes[code];
       localStorage.setItem("stars", stars);
       document.getElementById("balance").innerText = stars;
-
       used.push(code);
       localStorage.setItem("usedPromo", JSON.stringify(used));
-
       alert("Промокод активовано ✅ +" + promoCodes[code] + " ⭐");
       closePromo();
-    } else {
-      alert("Невірний промокод ❌");
-    }
+    } else { alert("Невірний промокод ❌"); }
   }
 
   document.addEventListener("click", function(e) {
-    if (!e.target.closest(".profile")) {
-      document.getElementById("menu").style.display = "none";
-    }
+    if (!e.target.closest(".profile")) { document.getElementById("menu").style.display = "none"; }
   });
 
-  // 🎰 Glock рулетка
   const glockSkins = [
     "Wasteland Rebel","Bullet Queen","Neo-Noir","Gold Toof","AXIA","Water Elemental",
     "Snack Attack","Vogue","Nuclear Garden","Franklin","Brass","Steel Disruption",
@@ -473,90 +429,77 @@
     "Blue Fissure","Candy Apple","Reactor"
   ];
 
-let preparedWin = null;
+  let preparedWin = null;
+  let isSpinning = false;
 
-function startRoulette() {
-
-  if (stars < 15) {
-    alert("Недостатньо ⭐");
-    return;
+  function getSkinFile(name) {
+    if (name === "Moonrise") return "glock18_m.png";
+    if (name === "Neo-Noir") return "glock18_neo.png";
+    return "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
   }
 
-  const modal = document.getElementById("rouletteModal");
-  const track = document.getElementById("rouletteTrack");
-  const list = document.getElementById("skinsList");
+  function startRoulette() {
+    // ВХІД БЕЗ ПЕРЕВІРКИ БАЛАНСУ
+    const modal = document.getElementById("rouletteModal");
+    const track = document.getElementById("rouletteTrack");
+    const list = document.getElementById("skinsList");
 
-  modal.style.display = "flex";
-  track.innerHTML = "";
-  list.innerHTML = "";
+    modal.style.display = "flex";
+    track.style.transition = "none";
+    track.style.transform = "translateX(0)";
+    track.innerHTML = "";
+    list.innerHTML = "";
 
-  let full = [];
-  for (let i = 0; i < 6; i++) full = full.concat(glockSkins);
+    let full = [];
+    for (let i = 0; i < 10; i++) full = full.concat(glockSkins);
 
-  full.forEach(name => {
+    full.forEach(name => {
+      track.innerHTML += `<div style="min-width:100px; text-align:center;"><img src="${getSkinFile(name)}" style="width:80px;height:60px;object-fit:contain;"></div>`;
+    });
 
-    let file;
-    if (name === "Moonrise") file = "glock18_m.png";
-    else if (name === "Neo-Noir") file = "glock18_neo.png";
-    else file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
+    glockSkins.forEach(name => {
+      list.innerHTML += `<img src="${getSkinFile(name)}" style="width:100%;height:45px;object-fit:contain; opacity:0.6;">`;
+    });
 
-    track.innerHTML += `<img src="${file}" style="width:90px;height:70px;object-fit:contain;">`;
-  });
+    preparedWin = Math.floor(Math.random() * glockSkins.length);
+  }
 
-  glockSkins.forEach(name => {
+  function spinRoulette() {
+    if (isSpinning) return;
+    if (stars < 15) { alert("Недостатньо ⭐"); return; }
 
-    let file;
-    if (name === "Moonrise") file = "glock18_m.png";
-    else if (name === "Neo-Noir") file = "glock18_neo.png";
-    else file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
+    // ЗНІМАННЯ ЗІРОК ПРИ КРУТІННІ
+    stars -= 15;
+    localStorage.setItem("stars", stars);
+    document.getElementById("balance").innerText = stars;
+    isSpinning = true;
 
-    list.innerHTML += `<img src="${file}" style="width:100%;height:70px;object-fit:contain;">`;
-  });
+    const track = document.getElementById("rouletteTrack");
+    const itemWidth = 110; 
+    const winIndex = 70 + preparedWin; 
+    const containerWidth = track.parentElement.offsetWidth;
+    const offset = (winIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
 
-  preparedWin = Math.floor(Math.random() * glockSkins.length);
-}
-
-function spinRoulette() {
-
-  if (preparedWin === null) return;
-
-  stars -= 15;
-  localStorage.setItem("stars", stars);
-  document.getElementById("balance").innerText = stars;
-
-  const track = document.getElementById("rouletteTrack");
-
-  const winIndex = preparedWin + 60;
-  const itemWidth = 100;
-  const centerOffset = (window.innerWidth / 2) - (itemWidth / 2);
-
-  const offset = winIndex * itemWidth - centerOffset;
-
-  setTimeout(() => {
+    track.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)";
     track.style.transform = `translateX(-${offset}px)`;
-  }, 100);
 
-  setTimeout(() => {
-    const itemName = glockSkins[preparedWin];
+    setTimeout(() => {
+      // ПРАВИЛЬНИЙ СКІН В ІНВЕНТАР
+      const wonName = glockSkins[preparedWin];
+      let items = JSON.parse(localStorage.getItem("items") || "[]");
+      items.push({ name: "Glock-18 " + wonName, price: 3 });
+      localStorage.setItem("items", JSON.stringify(items));
 
-    let items = JSON.parse(localStorage.getItem("items") || "[]");
-    items.push({ name: "Glock-18 " + itemName, price: 3 });
-    localStorage.setItem("items", JSON.stringify(items));
+      alert("🎉 Випало: Glock-18 " + wonName);
+      isSpinning = false;
+      closeRoulette();
+    }, 4500);
+  }
 
-    alert("🎉 Випало: Glock-18 " + itemName);
-
-    preparedWin = null;
-  }, 4000);
-}
-
-function closeRoulette() {
-  document.getElementById("rouletteModal").style.display = "none";
-  preparedWin = null;
-}
   function closeRoulette() {
+    if (isSpinning) return;
     document.getElementById("rouletteModal").style.display = "none";
   }
 </script>
-
 </body>
 </html>

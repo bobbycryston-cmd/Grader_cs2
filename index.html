@@ -122,7 +122,6 @@
       object-fit: contain;
     }
 
-    /* Рамки звичайних кейсів */
     .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
     .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
     .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
@@ -130,14 +129,12 @@
     .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
     .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
 
-    /* Спеціальні кейси */
     .purple-case { border: 2px solid #a855f7; box-shadow: 0 0 12px #a855f7; }
     .white-case { border: 2px solid #ffffff; box-shadow: 0 0 12px #ffffff; }
 
     .title { margin-top: 6px; font-size: 14px; font-weight: bold; }
     .price { color: gold; margin-top: 2px; font-size: 13px; }
 
-    /* МОДАЛКА ПРОМО */
     .promo-modal {
       position: fixed;
       top: 20px; left: 50%;
@@ -189,7 +186,6 @@
       font-size: 20px;
     }
 
-    /* РУЛЕТКА */
     #rouletteModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -363,7 +359,6 @@
     menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
 
-  // СПИСКИ СКІНІВ
   const glockSkins = [
     { name: "Wasteland Rebel", weight: 1 }, { name: "Bullet Queen", weight: 1 },
     { name: "Neo-Noir", weight: 1 }, { name: "Gold Toof", weight: 2 },
@@ -395,23 +390,25 @@
     { name: "Forest Leaves", weight: 25 }, { name: "Pathfinder", weight: 28 },
     { name: "Royal Blue", weight: 30 }, { name: "Para Green", weight: 35 },
     { name: "Purple DDPAT", weight: 35 }, { name: "Night Ops", weight: 40 },
-    { name: "Business Class", weight: 40 }, { name: "Stainless", weight: 45 },
-    { name: "Blood Tiger", weight: 45 }, { name: "Black Lotus", weight: 50 },
-    { name: "Check Engine", weight: 50 }, { name: "Torque", weight: 55 },
-    { name: "Lead Conduit", weight: 60 }
+    { name: "Business Class", weight: 40 }, { name: "Blood Tiger", weight: 45 },
+    { name: "Black Lotus", weight: 50 }, { name: "Check Engine", weight: 50 },
+    { name: "Torque", weight: 55 }, { name: "Lead Conduit", weight: 60 }
   ];
 
   let isSpinning = false;
 
   function getSkinFile(name, type) {
-    let prefix = type === 'glock' ? 'glock18_' : 'usp_';
-    let firstWord = name.split(' ')[0].toLowerCase();
-    
-    // Спеціальні випадки для коротких назв
-    if (name === "Moonrise") return prefix + "m.png";
-    if (name === "Neo-Noir") return prefix + "neo.png";
-    
-    return prefix + firstWord + ".png";
+    if (type === 'glock') {
+      // Стара логіка для глока (повні назви через _)
+      if (name === "Moonrise") return "glock18_m.png";
+      if (name === "Neo-Noir") return "glock18_neo.png";
+      return "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
+    } else {
+      // Твоя нова логіка для USP (тільки 1 слово)
+      let firstWord = name.split(' ')[0].toLowerCase();
+      if (name === "Neo-Noir") return "usp_neo.png";
+      return "usp_" + firstWord + ".png";
+    }
   }
 
   function startRoulette(type) {
@@ -428,13 +425,11 @@
     track.innerHTML = "";
     list.innerHTML = "";
 
-    // Наповнення рулетки випадковими скінами
     for(let i=0; i<100; i++) {
       const rnd = skins[Math.floor(Math.random() * skins.length)];
       track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name, type)}"></div>`;
     }
 
-    // Список скінів знизу
     skins.forEach(s => {
       list.innerHTML += `<img src="${getSkinFile(s.name, type)}" title="${s.name}">`;
     });
@@ -478,7 +473,6 @@
       let fullName = (type === 'glock' ? "Glock-18 " : "USP-S ") + winner.name;
       inv.push({ name: fullName, price: 5 });
       localStorage.setItem("items", JSON.stringify(inv));
-      
       alert("🎉 Випало: " + fullName);
       isSpinning = false;
       track.style.transition = "none";
@@ -520,6 +514,5 @@
     if (!e.target.closest(".profile")) document.getElementById("menu").style.display = "none";
   });
 </script>
-
 </body>
 </html>

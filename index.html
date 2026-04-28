@@ -319,7 +319,7 @@
     </div>
   </div>
 </div>
-<div id="rouletteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000a; z-index:2000; justify-content:center; align-items:center;">
+<div id="rouletteModal" style="display:none;">
 
   <div style="width:95%; max-width:700px; background:#111; border-radius:16px; padding:20px; position:relative;">
 
@@ -477,6 +477,11 @@ let preparedWin = null;
 
 function startRoulette() {
 
+  if (stars < 15) {
+    alert("Недостатньо ⭐");
+    return;
+  }
+
   const modal = document.getElementById("rouletteModal");
   const track = document.getElementById("rouletteTrack");
   const list = document.getElementById("skinsList");
@@ -495,7 +500,7 @@ function startRoulette() {
     else if (name === "Neo-Noir") file = "glock18_neo.png";
     else file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
 
-    track.innerHTML += `<img src="${file}" style="width:110px;height:80px;object-fit:contain;">`;
+    track.innerHTML += `<img src="${file}" style="width:90px;height:70px;object-fit:contain;">`;
   });
 
   glockSkins.forEach(name => {
@@ -515,11 +520,6 @@ function spinRoulette() {
 
   if (preparedWin === null) return;
 
-  if (stars < 15) {
-    alert("Недостатньо ⭐");
-    return;
-  }
-
   stars -= 15;
   localStorage.setItem("stars", stars);
   document.getElementById("balance").innerText = stars;
@@ -527,11 +527,10 @@ function spinRoulette() {
   const track = document.getElementById("rouletteTrack");
 
   const winIndex = preparedWin + 60;
-  const itemWidth = 120;
-  const center = window.innerWidth / 2;
+  const itemWidth = 100;
+  const centerOffset = (window.innerWidth / 2) - (itemWidth / 2);
 
-  const offset = (winIndex * itemWidth) - center + (itemWidth / 2);
-
+  const offset = winIndex * itemWidth - centerOffset;
 
   setTimeout(() => {
     track.style.transform = `translateX(-${offset}px)`;
@@ -550,8 +549,13 @@ function spinRoulette() {
   }, 4000);
 }
 
-
-  
+function closeRoulette() {
+  document.getElementById("rouletteModal").style.display = "none";
+  preparedWin = null;
+}
+  function closeRoulette() {
+    document.getElementById("rouletteModal").style.display = "none";
+  }
 </script>
 
 </body>

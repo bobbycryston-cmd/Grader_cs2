@@ -452,68 +452,91 @@
       document.getElementById("menu").style.display = "none";
     }
   });
-  // 🎰 Glock рулетка
-const glockSkins = [
-"Wasteland Rebel","Bullet Queen","Neo-Noir","Gold Toof","AXIA","Water Elemental",
-"Snack Attack","Vogue","Nuclear Garden","Franklin","Brass","Steel Disruption",
-"Royal Legion","Grinder","Moonrise","Weasel","Death Rattle","High Beam",
-"Night","Sand Dune","Groundwater","Oxide Blaze","Sacrifice","Clear Polymer",
-"Warhawk","Catacombs","Wraiths","Off World","Ironwork","Bunset Burner",
-"Blue Fissure","Candy Apple","Reactor"
-];
 
-function startRoulette() {
-  if (stars < 15) {
-    alert("Недостатньо ⭐");
-    return;
+  // 🎰 Glock рулетка
+  const glockSkins = [
+    "Wasteland Rebel","Bullet Queen","Neo-Noir","Gold Toof","AXIA","Water Elemental",
+    "Snack Attack","Vogue","Nuclear Garden","Franklin","Brass","Steel Disruption",
+    "Royal Legion","Grinder","Moonrise","Weasel","Death Rattle","High Beam",
+    "Night","Sand Dune","Groundwater","Oxide Blaze","Sacrifice","Clear Polymer",
+    "Warhawk","Catacombs","Wraiths","Off World","Ironwork","Bunset Burner",
+    "Blue Fissure","Candy Apple","Reactor"
+  ];
+
+  function startRoulette() {
+    if (stars < 15) {
+      alert("Недостатньо ⭐");
+      return;
+    }
+
+    stars -= 15;
+    localStorage.setItem("stars", stars);
+    document.getElementById("balance").innerText = stars;
+
+    const modal = document.getElementById("rouletteModal");
+    const track = document.getElementById("rouletteTrack");
+    const list = document.getElementById("skinsList");
+
+    modal.style.display = "flex";
+    track.innerHTML = "";
+    list.innerHTML = "";
+
+    let full = [];
+    for (let i = 0; i < 5; i++) full = full.concat(glockSkins);
+
+    full.forEach(name => {
+
+      // ✅ ФІКС НАЗВ
+      let file;
+      if (name === "Moonrise") file = "glock18_m.png";
+      else if (name === "Neo-Noir") file = "glock18_neo.png";
+      else file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
+
+      track.innerHTML += `
+      <div style="width:80px; text-align:center;">
+        <img src="${file}" style="width:80px;height:60px;object-fit:contain;">
+        <div style="font-size:10px;">Glock-18</div>
+        <div style="font-size:10px;color:gold;">${name}</div>
+      </div>`;
+    });
+
+    glockSkins.forEach(name => {
+
+      // ✅ ФІКС НАЗВ
+      let file;
+      if (name === "Moonrise") file = "glock18_m.png";
+      else if (name === "Neo-Noir") file = "glock18_neo.png";
+      else file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
+
+      list.innerHTML += `
+      <div style="text-align:center;">
+        <img src="${file}" style="width:100%;height:60px;object-fit:contain;">
+        <div style="font-size:10px;">Glock-18</div>
+        <div style="font-size:10px;color:gold;">${name}</div>
+      </div>`;
+    });
+
+    const win = Math.floor(Math.random() * glockSkins.length) + 50;
+    const offset = win * 90;
+
+    setTimeout(() => {
+      track.style.transform = `translateX(-${offset}px)`;
+    }, 100);
+
+    setTimeout(() => {
+      let itemName = glockSkins[win % glockSkins.length];
+
+      let items = JSON.parse(localStorage.getItem("items") || "[]");
+      items.push({ name: "Glock-18 " + itemName, price: 3 });
+      localStorage.setItem("items", JSON.stringify(items));
+
+      alert("🎉 Випало: Glock-18 " + itemName);
+    }, 3000);
   }
 
-  stars -= 15;
-  localStorage.setItem("stars", stars);
-  document.getElementById("balance").innerText = stars;
-
-  const modal = document.getElementById("rouletteModal");
-  const track = document.getElementById("rouletteTrack");
-  const list = document.getElementById("skinsList");
-
-  modal.style.display = "flex";
-  track.innerHTML = "";
-  list.innerHTML = "";
-
-  let full = [];
-  for (let i = 0; i < 5; i++) full = full.concat(glockSkins);
-
-  full.forEach(name => {
-    let file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
-    track.innerHTML += `<img src="${file}" style="width:80px;">`;
-  });
-
-  glockSkins.forEach(name => {
-    let file = "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
-    list.innerHTML += `<img src="${file}" style="width:100%;">`;
-  });
-
-  const win = Math.floor(Math.random() * glockSkins.length) + 50;
-  const offset = win * 90;
-
-  setTimeout(() => {
-    track.style.transform = `translateX(-${offset}px)`;
-  }, 100);
-
-  setTimeout(() => {
-    let itemName = glockSkins[win % glockSkins.length];
-
-    let items = JSON.parse(localStorage.getItem("items") || "[]");
-    items.push({ name: "Glock-18 " + itemName, price: 3 });
-    localStorage.setItem("items", JSON.stringify(items));
-
-    alert("🎉 Випало: Glock-18 " + itemName);
-  }, 3000);
-}
-
-function closeRoulette() {
-  document.getElementById("rouletteModal").style.display = "none";
-}
+  function closeRoulette() {
+    document.getElementById("rouletteModal").style.display = "none";
+  }
 </script>
 
 </body>

@@ -84,8 +84,8 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      background: #333;
-      color: white;
+      color: black;
+      background: #fff; /* Білі кнопки в меню для контрасту */
     }
 
     .case-grid {
@@ -135,13 +135,13 @@
     .title { margin-top: 6px; font-size: 14px; font-weight: bold; }
     .price { color: gold; margin-top: 2px; font-size: 13px; }
 
-    /* Промокод модалка */
+    /* ОРИГІНАЛЬНЕ МЕНЮ ПРОМОКОДУ */
     .promo-modal {
       position: fixed;
       top: 20px; left: 50%;
       transform: translateX(-50%);
       display: none;
-      z-index: 3000;
+      z-index: 1000;
     }
 
     .promo-box {
@@ -149,24 +149,42 @@
       background: #111;
       padding: 15px;
       border-radius: 14px;
-      width: 280px;
-      border: 1px solid #333;
+      width: 300px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
     .promo-input-box {
       display: flex;
+      align-items: center;
       gap: 8px;
-      margin-top: 10px;
+      background: rgba(255,255,255,0.05);
+      padding: 6px;
+      border-radius: 10px;
     }
 
     .promo-input-box input {
       flex: 1;
-      background: #222;
-      border: 1px solid #444;
+      background: transparent;
+      border: none;
       color: white;
-      padding: 8px;
-      border-radius: 8px;
       outline: none;
+    }
+
+    .promo-btn {
+      background: #ff9f43;
+      color: black;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px; right: 15px;
+      cursor: pointer;
+      font-size: 20px;
     }
 
     /* Рулетка */
@@ -222,11 +240,24 @@
       justify-content: center;
     }
 
-    .roulette-item img, #skinsList img {
+    .roulette-item img {
       width: 80px;
       height: 60px;
       object-fit: contain;
       border-radius: 8px;
+    }
+
+    /* КНОПКА OPEN - ЧОРНИЙ КОЛІР ТЕКСТУ */
+    #openBtn {
+      width: 100%;
+      padding: 15px;
+      background: #ff9f43;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      color: black !important; /* ПРИМУСОВО ЧОРНИЙ */
+      font-size: 16px;
     }
 
     #skinsList {
@@ -234,8 +265,15 @@
       display: grid; 
       grid-template-columns: repeat(5, 1fr); 
       gap: 8px; 
-      max-height: 120px; 
+      max-height: 150px; 
       overflow-y: auto;
+    }
+
+    #skinsList img {
+      width: 100%;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -247,7 +285,7 @@
     <div class="balance-box">
       <span id="balance">0</span> ⭐
     </div>
-    <button class="add-btn" onclick="alert('Поповнення скоро!')">+</button>
+    <button class="add-btn" onclick="alert('Soon')">+</button>
     <button class="add-btn" onclick="openPromo()">🎟</button>
     <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar">
@@ -256,10 +294,10 @@
   </div>
 
   <div class="menu" id="menu">
-    <div style="font-size: 12px;">🔊 Volume</div>
+    <div style="font-size: 12px; margin-bottom: 5px;">🔊 Гучність</div>
     <input type="range" id="volumeSlider" min="0" max="100" value="50" style="width:100%">
     <button onclick="window.location.href='inventory.html'">🎒 Inventory</button>
-    <button onclick="alert('Upgrade в розробці!')">⚡ Upgrade</button>
+    <button onclick="alert('Upgrade Coming Soon')">⚡ Upgrade</button>
   </div>
 </div>
 
@@ -270,17 +308,18 @@
   <div class="case" onclick="openCase(10)"><div class="case-box"><div class="case-img-box"><img src="platinum.png"></div><div class="title">Platinum</div><div class="price">10 ⭐</div></div></div>
   <div class="case" onclick="openCase(25)"><div class="case-box"><div class="case-img-box"><img src="ruby.png"></div><div class="title">Ruby</div><div class="price">25 ⭐</div></div></div>
   <div class="case" onclick="openCase(50)"><div class="case-box"><div class="case-img-box"><img src="diamond.png"></div><div class="title">Diamond</div><div class="price">50 ⭐</div></div></div>
+  
   <div class="case" onclick="startRoulette('glock')"><div class="case-box purple-case"><div class="case-img-box"><img src="glock_case.png"></div><div class="title">Glock Case</div><div class="price">15 ⭐</div></div></div>
   <div class="case" onclick="startRoulette('usp')"><div class="case-box white-case"><div class="case-img-box"><img src="usp_case.png"></div><div class="title">USP-S Case</div><div class="price">15 ⭐</div></div></div>
 </div>
 
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
-    <div onclick="closePromo()" style="position:absolute; right:10px; top:5px; cursor:pointer;">✖</div>
-    <div style="text-align:center; font-weight:bold;">Промокод</div>
+    <div class="close-btn" onclick="closePromo()">✖</div>
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold;">Промокод</div>
     <div class="promo-input-box">
-      <input type="text" id="promoInput" placeholder="Введіть код">
-      <button onclick="applyPromo()" style="background:#ff9f43; border:none; padding:8px; border-radius:8px; cursor:pointer;">OK</button>
+      <input type="text" placeholder="Введіть код" id="promoInput">
+      <button class="promo-btn" onclick="applyPromo()">OK</button>
     </div>
   </div>
 </div>
@@ -293,7 +332,7 @@
       <div class="pointer"></div>
       <div id="rouletteTrack"></div>
     </div>
-    <button id="openBtn" style="width:100%; padding:15px; background:#ff9f43; border:none; border-radius:10px; font-weight:bold; cursor:pointer; font-size:16px;">OPEN (15 ⭐)</button>
+    <button id="openBtn">OPEN (15 ⭐)</button>
     <div id="skinsList"></div>
   </div>
 </div>
@@ -350,6 +389,25 @@
 
   let isSpinning = false;
 
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  function openPromo() { document.getElementById("promoModal").style.display = "block"; }
+  function closePromo() { document.getElementById("promoModal").style.display = "none"; }
+
+  function applyPromo() {
+    let input = document.getElementById("promoInput").value.trim();
+    if (input === "+") {
+      stars += 100;
+      localStorage.setItem("stars", stars);
+      document.getElementById("balance").innerText = stars;
+      alert("🎉 +100 ⭐");
+      closePromo();
+    } else { alert("❌ Код невірний"); }
+  }
+
   function getSkinFile(name, type) {
     if (type === 'glock') {
       if (name === "Moonrise") return "glock18_m.png";
@@ -360,25 +418,6 @@
       if (name === "Neo-Noir") return "usp_neo.png";
       return "usp_" + firstWord + ".png";
     }
-  }
-
-  function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-  }
-
-  function openPromo() { document.getElementById("promoModal").style.display = "block"; }
-  function closePromo() { document.getElementById("promoModal").style.display = "none"; }
-
-  function applyPromo() {
-    let val = document.getElementById("promoInput").value;
-    if (val === "+") {
-      stars += 100;
-      localStorage.setItem("stars", stars);
-      document.getElementById("balance").innerText = stars;
-      alert("🎉 +100 ⭐");
-      closePromo();
-    } else { alert("Невірний код!"); }
   }
 
   function startRoulette(type) {
@@ -398,7 +437,7 @@
       const rnd = skins[Math.floor(Math.random() * skins.length)];
       track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name, type)}"></div>`;
     }
-    skins.forEach(s => { list.innerHTML += `<img src="${getSkinFile(s.name, type)}">`; });
+    skins.forEach(s => { list.innerHTML += `<img src="${getSkinFile(s.name, type)}" title="${s.name}">`; });
     document.getElementById("openBtn").onclick = () => spinRoulette(type);
   }
 

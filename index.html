@@ -2,16 +2,18 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <title>Grader_cs2</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: radial-gradient(circle at top, #1a1735, #090816 80%);
       color: white;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .header {
@@ -63,43 +65,44 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
+      background: #333;
     }
 
     .menu {
       position: absolute;
       top: 70px;
       right: 12px;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       padding: 12px;
       border-radius: 12px;
       width: 200px;
       display: none;
-      z-index: 100;
+      z-index: 1000;
     }
 
     .menu button {
       width: 100%;
       margin-top: 8px;
-      padding: 8px;
+      padding: 10px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       color: black;
       background: #fff;
+      font-weight: bold;
     }
 
     .case-grid {
       display: grid;
-      grid-template-columns: repeat(3, 110px);
+      grid-template-columns: repeat(3, 100px);
       justify-content: center;
-      gap: 20px;
-      padding: 20px;
+      gap: 15px;
+      padding: 15px;
     }
 
     .case {
-      width: 110px;
+      width: 100px;
       cursor: pointer;
-      transition: 0.25s;
     }
 
     .case-box {
@@ -110,7 +113,7 @@
     }
 
     .case-img-box {
-      height: 80px;
+      height: 70px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -122,26 +125,24 @@
       object-fit: contain;
     }
 
-    /* Рамки кейсів */
-    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
-    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
-    .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
-    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; box-shadow: 0 0 10px #7f8cff; }
-    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
-    .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
-    .purple-case { border: 2px solid #a855f7; box-shadow: 0 0 12px #a855f7; }
-    .white-case { border: 2px solid #ffffff; box-shadow: 0 0 12px #ffffff; }
+    .case:nth-child(1) .case-box { border: 2px solid #cd7f32; }
+    .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; }
+    .case:nth-child(3) .case-box { border: 2px solid gold; }
+    .case:nth-child(4) .case-box { border: 2px solid #7f8cff; }
+    .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; }
+    .case:nth-child(6) .case-box { border: 2px solid #00eaff; }
+    .purple-case { border: 2px solid #a855f7; }
+    .white-case { border: 2px solid #ffffff; }
 
-    .title { margin-top: 6px; font-size: 14px; font-weight: bold; }
-    .price { color: gold; margin-top: 2px; font-size: 13px; }
+    .title { margin-top: 6px; font-size: 12px; font-weight: bold; }
+    .price { color: gold; margin-top: 2px; font-size: 11px; }
 
-    /* Дизайн модального вікна промокоду */
     .promo-modal {
       position: fixed;
       top: 20px; left: 50%;
       transform: translateX(-50%);
       display: none;
-      z-index: 1000;
+      z-index: 3000;
     }
 
     .promo-box {
@@ -149,17 +150,16 @@
       background: #111;
       padding: 15px;
       border-radius: 14px;
-      width: 300px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 280px;
       border: 1px solid #333;
     }
 
     .promo-input-box {
       display: flex;
-      align-items: center;
       gap: 8px;
+      margin-top: 10px;
       background: rgba(255,255,255,0.05);
-      padding: 6px;
+      padding: 5px;
       border-radius: 10px;
     }
 
@@ -173,7 +173,6 @@
 
     .promo-btn {
       background: #ff9f43;
-      color: black;
       border: none;
       padding: 6px 12px;
       border-radius: 8px;
@@ -181,18 +180,10 @@
       font-weight: bold;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 15px;
-      cursor: pointer;
-      font-size: 20px;
-    }
-
-    /* Рулетка */
     #rouletteModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       display: none;
       align-items: center;
       justify-content: center;
@@ -200,8 +191,8 @@
     }
 
     .roulette-content {
-      width: 95%;
-      max-width: 600px;
+      width: 90%;
+      max-width: 500px;
       background: #111;
       border-radius: 16px;
       padding: 20px;
@@ -210,7 +201,7 @@
 
     .roulette-window {
       position: relative;
-      height: 100px;
+      height: 90px;
       overflow: hidden;
       border: 2px solid #333;
       border-radius: 10px;
@@ -234,7 +225,7 @@
     }
 
     .roulette-item {
-      min-width: 100px;
+      min-width: 90px;
       height: 100%;
       display: flex;
       align-items: center;
@@ -242,13 +233,11 @@
     }
 
     .roulette-item img {
-      width: 80px;
-      height: 60px;
+      width: 70px;
+      height: 50px;
       object-fit: contain;
-      border-radius: 8px;
     }
 
-    /* Кнопка OPEN - Текст чорний */
     #openBtn {
       width: 100%;
       padding: 15px;
@@ -265,16 +254,13 @@
       margin-top: 15px; 
       display: grid; 
       grid-template-columns: repeat(5, 1fr); 
-      gap: 8px; 
-      max-height: 150px; 
+      gap: 5px; 
+      max-height: 120px; 
       overflow-y: auto;
     }
 
     #skinsList img {
-      width: 100%;
-      height: 60px;
-      object-fit: contain;
-      border-radius: 8px;
+      width: 100%; height: 50px; object-fit: contain;
     }
   </style>
 </head>
@@ -298,7 +284,7 @@
     <div style="font-size: 12px; margin-bottom: 5px;">🔊 Гучність</div>
     <input type="range" id="volumeSlider" min="0" max="100" value="50" style="width:100%">
     <button onclick="window.location.href='inventory.html'">🎒 Inventory</button>
-    <button onclick="alert('Upgrade Coming Soon')">⚡ Upgrade</button>
+    <button onclick="alert('Upgrade Soon')">⚡ Upgrade</button>
   </div>
 </div>
 
@@ -316,10 +302,10 @@
 
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
-    <div class="close-btn" onclick="closePromo()">✖</div>
-    <div style="text-align:center; margin-bottom:10px; font-weight:bold;">Промокод</div>
+    <div onclick="closePromo()" style="position:absolute; right:10px; top:5px; cursor:pointer;">✖</div>
+    <div style="text-align:center; font-weight:bold;">Промокод</div>
     <div class="promo-input-box">
-      <input type="text" placeholder="Введіть код" id="promoInput">
+      <input type="text" id="promoInput" placeholder="Код">
       <button class="promo-btn" onclick="applyPromo()">OK</button>
     </div>
   </div>
@@ -342,13 +328,18 @@
   const tg = window.Telegram.WebApp;
   tg.expand();
 
+  // ПРАВИЛЬНЕ НАЛАШТУВАННЯ ЗВУКУ ДЛЯ ТЕЛЕФОНІВ
   const openSound = new Audio('case_open.mp3');
   const volumeSlider = document.getElementById('volumeSlider');
 
-  // Зв'язуємо повзунок з гучністю відразу
-  volumeSlider.addEventListener('input', () => {
-    openSound.volume = volumeSlider.value / 100;
-  });
+  function updateVolume() {
+    let vol = volumeSlider.value / 100;
+    openSound.volume = vol;
+    // На мобільних іноді треба мутити примусово
+    openSound.muted = (vol === 0);
+  }
+
+  volumeSlider.addEventListener('input', updateVolume);
 
   let stars = parseInt(localStorage.getItem("stars") || "0");
   document.getElementById("balance").innerText = stars;
@@ -413,7 +404,7 @@
       document.getElementById("balance").innerText = stars;
       alert("🎉 +100 ⭐");
       closePromo();
-    } else { alert("❌ Код невірний"); }
+    } else { alert("❌ Error"); }
   }
 
   function getSkinFile(name, type) {
@@ -441,21 +432,21 @@
     track.innerHTML = "";
     list.innerHTML = "";
 
-    for(let i=0; i<100; i++) {
+    // На телефонах 40 предметів достатньо
+    for(let i=0; i<45; i++) {
       const rnd = skins[Math.floor(Math.random() * skins.length)];
       track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name, type)}"></div>`;
     }
-    skins.forEach(s => { list.innerHTML += `<img src="${getSkinFile(s.name, type)}" title="${s.name}">`; });
+    skins.forEach(s => { list.innerHTML += `<img src="${getSkinFile(s.name, type)}">`; });
     document.getElementById("openBtn").onclick = () => spinRoulette(type);
   }
 
   function spinRoulette(type) {
     if (isSpinning || stars < 15) return;
 
-    // Граємо звук з поточною гучністю
-    openSound.volume = volumeSlider.value / 100;
+    updateVolume(); // Оновлюємо гучність прямо перед стартом
     openSound.currentTime = 0;
-    openSound.play().catch(e => console.log("Sound play failed:", e));
+    openSound.play().catch(e => console.log("Sound play error"));
 
     stars -= 15;
     localStorage.setItem("stars", stars);
@@ -469,9 +460,9 @@
     for (let s of skins) { if (rnd < s.weight) { winner = s; break; } rnd -= s.weight; }
 
     const track = document.getElementById("rouletteTrack");
-    const winPos = 80;
+    const winPos = 35; // Змінено позицію під 45 предметів
     track.querySelectorAll('.roulette-item')[winPos].innerHTML = `<img src="${getSkinFile(winner.name, type)}">`;
-    const offset = (winPos * 100) - (document.querySelector('.roulette-window').offsetWidth / 2) + 50;
+    const offset = (winPos * 90) - (document.querySelector('.roulette-window').offsetWidth / 2) + 45;
 
     track.style.transition = "transform 8s cubic-bezier(0.15, 0, 0.15, 1)";
     track.style.transform = `translateX(-${offset}px)`;
@@ -480,13 +471,13 @@
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
       inv.push({ name: (type==='glock'?'Glock ':'USP ')+winner.name, price: 5 });
       localStorage.setItem("items", JSON.stringify(inv));
-      alert("🎉 Випало: " + winner.name);
+      alert("🎉 " + winner.name);
       isSpinning = false;
     }, 8500);
   }
 
   function closeRoulette() { if (!isSpinning) document.getElementById("rouletteModal").style.display = "none"; }
-  function openCase(p) { if (stars >= p) { stars -= p; localStorage.setItem("stars", stars); document.getElementById("balance").innerText = stars; alert("🎉 Випав предмет!"); } else { alert("Недостатньо ⭐"); } }
+  function openCase(p) { if (stars >= p) { stars -= p; localStorage.setItem("stars", stars); document.getElementById("balance").innerText = stars; alert("🎉 Won!"); } else { alert("Need stars"); } }
 
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".profile") && !e.target.closest(".menu")) document.getElementById("menu").style.display = "none";

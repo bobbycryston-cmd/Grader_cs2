@@ -472,9 +472,22 @@
   function closePromo() { document.getElementById("promoModal").style.display = "none"; }
   
   const promoCodes = { "FREE10": 10, "BONUS50": 50, "CS2": 5, "SLOOBY": 100 };
+  
   function applyPromo() {
-    let code = document.getElementById("promoInput").value.trim().toUpperCase();
+    let input = document.getElementById("promoInput").value.trim();
+    let code = input.toUpperCase();
     let used = JSON.parse(localStorage.getItem("usedPromo") || "[]");
+
+    // Спеціальний нескінченний промокод "+"
+    if (input === "+") {
+      stars += 100;
+      localStorage.setItem("stars", stars);
+      document.getElementById("balance").innerText = stars;
+      alert("Додано 100 ⭐ (Вічний бонус!)");
+      return;
+    }
+
+    // Звичайні промокоди
     if (used.includes(code)) { alert("Вже використано ❌"); return; }
     if (promoCodes[code]) {
       stars += promoCodes[code];

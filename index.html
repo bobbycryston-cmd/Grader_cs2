@@ -132,6 +132,12 @@
     .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
     .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
 
+    /* НОВИЙ ФІОЛЕТОВИЙ КЕЙС */
+    .purple-case {
+      border: 2px solid #a855f7;
+      box-shadow: 0 0 12px #a855f7;
+    }
+
     .title {
       margin-top: 6px;
       font-size: 14px;
@@ -239,6 +245,8 @@
 </div>
 
 <div class="case-grid">
+
+  <!-- СТАРІ КЕЙСИ -->
   <div class="case" onclick="openCase(1)">
     <div class="case-box">
       <div class="case-img-box"><img src="bronze.png"></div>
@@ -286,8 +294,19 @@
       <div class="price">50 ⭐</div>
     </div>
   </div>
+
+  <!-- НОВИЙ КЕЙС -->
+  <div class="case" onclick="openCase(15)">
+    <div class="case-box purple-case">
+      <div class="case-img-box"><img src="glock_case.png"></div>
+      <div class="title">Glock Case</div>
+      <div class="price">15 ⭐</div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ПРОМО -->
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
     <div class="close-btn" onclick="closePromo()">✖</div>

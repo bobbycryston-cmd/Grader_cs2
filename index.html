@@ -150,7 +150,6 @@
       font-size: 13px;
     }
 
-    /* ПРОМОМОДАЛКА */
     .promo-modal {
       position: fixed;
       top: 20px;
@@ -167,12 +166,6 @@
       border-radius: 14px;
       width: 300px;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-
-    .promo-title {
-      text-align: center;
-      margin-bottom: 10px;
-      font-weight: bold;
     }
 
     .promo-input-box {
@@ -200,7 +193,6 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      flex-shrink: 0;
     }
 
     .close-btn {
@@ -209,10 +201,8 @@
       right: 15px;
       cursor: pointer;
       font-size: 20px;
-      color: white;
     }
 
-    /* РУЛЕТКА */
     #rouletteModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -294,7 +284,6 @@
       width: 100%;
       height: 60px;
       object-fit: contain;
-      opacity: 1; /* Яскраві картинки */
     }
   </style>
 </head>
@@ -329,7 +318,6 @@
   <div class="case" onclick="openCase(10)"><div class="case-box"><div class="case-img-box"><img src="platinum.png"></div><div class="title">Platinum</div><div class="price">10 ⭐</div></div></div>
   <div class="case" onclick="openCase(25)"><div class="case-box"><div class="case-img-box"><img src="ruby.png"></div><div class="title">Ruby</div><div class="price">25 ⭐</div></div></div>
   <div class="case" onclick="openCase(50)"><div class="case-box"><div class="case-img-box"><img src="diamond.png"></div><div class="title">Diamond</div><div class="price">50 ⭐</div></div></div>
-
   <div class="case" onclick="startRoulette()">
     <div class="case-box purple-case">
       <div class="case-img-box"><img src="glock_case.png"></div>
@@ -342,10 +330,9 @@
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
     <div class="close-btn" onclick="closePromo()">✖</div>
-    <div class="promo-title">Промокод</div>
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold;">Промокод</div>
     <div class="promo-input-box">
-      <span style="font-size:18px;">🎟</span>
-      <input type="text" placeholder="Введіть промокод" id="promoInput">
+      <input type="text" placeholder="Введіть код" id="promoInput">
       <button class="promo-btn" onclick="applyPromo()">OK</button>
     </div>
   </div>
@@ -355,12 +342,10 @@
   <div class="roulette-content">
     <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; font-size:20px; cursor:pointer;">✖</div>
     <h3 style="text-align:center; margin-top:0;">Glock-18 Case</h3>
-    
     <div class="roulette-window">
       <div class="pointer"></div>
       <div id="rouletteTrack"></div>
     </div>
-
     <button onclick="spinRoulette()" style="width:100%; padding:15px; background:#ff9f43; border:none; border-radius:10px; font-weight:bold; cursor:pointer; color:black; font-size:16px;">
       OPEN (15 ⭐)
     </button>
@@ -389,17 +374,23 @@
   function openInventory() { window.location.href = "inventory.html"; }
 
   const glockSkins = [
-    { name: "Wasteland Rebel", weight: 1 }, 
-    { name: "Bullet Queen", weight: 2 },
-    { name: "Neo-Noir", weight: 2 },
-    { name: "Water Elemental", weight: 4 },
-    { name: "Vogue", weight: 7 },
-    { name: "Franklin", weight: 10 },
-    { name: "Moonrise", weight: 15 },
-    { name: "Grinder", weight: 20 },
-    { name: "Candy Apple", weight: 25 },
-    { name: "Oxide Blaze", weight: 35 },
-    { name: "Sand Dune", weight: 50 }
+    { name: "Wasteland Rebel", weight: 1 }, { name: "Bullet Queen", weight: 1 },
+    { name: "Neo-Noir", weight: 1 }, { name: "Gold Toof", weight: 2 },
+    { name: "AXIA", weight: 2 }, { name: "Water Elemental", weight: 3 },
+    { name: "Snack Attack", weight: 4 }, { name: "Vogue", weight: 4 },
+    { name: "Nuclear Garden", weight: 5 }, { name: "Franklin", weight: 5 },
+    { name: "Brass", weight: 6 }, { name: "Steel Disruption", weight: 6 },
+    { name: "Royal Legion", weight: 7 }, { name: "Grinder", weight: 8 },
+    { name: "Moonrise", weight: 8 }, { name: "Weasel", weight: 10 },
+    { name: "Death Rattle", weight: 12 }, { name: "High Beam", weight: 12 },
+    { name: "Night", weight: 15 }, { name: "Sand Dune", weight: 20 },
+    { name: "Groundwater", weight: 20 }, { name: "Oxide Blaze", weight: 25 },
+    { name: "Sacrifice", weight: 25 }, { name: "Clear Polymer", weight: 30 },
+    { name: "Warhawk", weight: 30 }, { name: "Catacombs", weight: 30 },
+    { name: "Wraiths", weight: 35 }, { name: "Off World", weight: 35 },
+    { name: "Ironwork", weight: 40 }, { name: "Bunset Burner", weight: 40 },
+    { name: "Blue Fissure", weight: 45 }, { name: "Candy Apple", weight: 45 },
+    { name: "Reactor", weight: 50 }
   ];
 
   let isSpinning = false;
@@ -421,14 +412,13 @@
     track.innerHTML = "";
     list.innerHTML = "";
 
-    // Рандомна стрічка для візуалу (100 елементів)
     for(let i=0; i<100; i++) {
       const rnd = glockSkins[Math.floor(Math.random() * glockSkins.length)];
       track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name)}"></div>`;
     }
 
     glockSkins.forEach(s => {
-      list.innerHTML += `<img src="${getSkinFile(s.name)}">`;
+      list.innerHTML += `<img src="${getSkinFile(s.name)}" title="${s.name}">`;
     });
   }
 
@@ -466,7 +456,6 @@
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
       inv.push({ name: "Glock-18 " + winner.name, price: 5 });
       localStorage.setItem("items", JSON.stringify(inv));
-
       alert("🎉 Випало: Glock-18 " + winner.name);
       isSpinning = false;
       track.style.transition = "none";
@@ -481,7 +470,7 @@
 
   function openPromo() { document.getElementById("promoModal").style.display = "block"; }
   function closePromo() { document.getElementById("promoModal").style.display = "none"; }
-
+  
   const promoCodes = { "FREE10": 10, "BONUS50": 50, "CS2": 5, "SLOOBY": 100 };
   function applyPromo() {
     let code = document.getElementById("promoInput").value.trim().toUpperCase();

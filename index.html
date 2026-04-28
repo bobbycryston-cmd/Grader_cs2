@@ -76,6 +76,7 @@
       border-radius: 12px;
       width: 200px;
       display: none;
+      z-index: 100;
     }
 
     .menu button {
@@ -182,10 +183,6 @@
       border-radius: 10px;
     }
 
-    .promo-icon {
-      font-size: 18px;
-    }
-
     .promo-input-box input {
       flex: 1;
       background: transparent;
@@ -214,18 +211,70 @@
       color: white;
     }
 
-    /* ФІКС ЦЕНТРУВАННЯ РУЛЕТКИ */
+    /* РУЛЕТКА В ЦЕНТРІ */
     #rouletteModal {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
       display: none;
       align-items: center;
       justify-content: center;
-      background: rgba(0,0,0,0.8);
       z-index: 2000;
+    }
+
+    .roulette-content {
+      width: 95%;
+      max-width: 600px;
+      background: #111;
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .roulette-window {
+      position: relative;
+      height: 100px;
+      overflow: hidden;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background: #050505;
+      margin: 20px 0;
+    }
+
+    .pointer {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ff9f43;
+      z-index: 20;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px #ff9f43;
+    }
+
+    #rouletteTrack {
+      display: flex;
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      transition: none;
+    }
+
+    .roulette-item {
+      min-width: 100px;
+      max-width: 100px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .roulette-item img {
+      width: 80px;
+      height: 60px;
+      object-fit: contain;
     }
   </style>
 </head>
@@ -311,28 +360,27 @@
     <div class="close-btn" onclick="closePromo()">✖</div>
     <div class="promo-title">Промокод</div>
     <div class="promo-input-box">
-      <span class="promo-icon">🎟</span>
+      <span style="font-size:18px;">🎟</span>
       <input type="text" placeholder="Введіть промокод" id="promoInput">
-      <button class="promo-btn" onclick="applyPromo()">Застосувати</button>
+      <button class="promo-btn" onclick="applyPromo()">OK</button>
     </div>
   </div>
 </div>
 
 <div id="rouletteModal">
-  <div style="width:95%; max-width:700px; background:#111; border-radius:16px; padding:20px; position:relative; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
-    <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; font-size:20px; cursor:pointer;">✖</div>
-    <div style="position:relative; margin-bottom:10px;">
-      <div style="position:absolute; left:50%; transform:translateX(-50%); top:0; font-size:22px; z-index:10; color:#ff9f43;">▼</div>
-      <div style="height:2px; background:#333; margin-top:14px;"></div>
+  <div class="roulette-content">
+    <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; cursor:pointer; font-size:20px;">✖</div>
+    <h3 style="text-align:center; margin-top:0;">Glock-18 Case</h3>
+    
+    <div class="roulette-window">
+      <div class="pointer"></div>
+      <div id="rouletteTrack"></div>
     </div>
-    <div style="overflow:hidden; border-radius:10px; border:2px solid #333; background:#050505;">
-      <div id="rouletteTrack" style="display:flex; gap:10px; padding:15px; transition:none;"></div>
-    </div>
-    <button onclick="spinRoulette()" 
-      style="margin-top:15px; width:100%; padding:12px; border:none; border-radius:10px; background:#ff9f43; font-weight:bold; cursor:pointer; color:black; font-size:16px;">
+
+    <button onclick="spinRoulette()" style="width:100%; padding:15px; background:#ff9f43; border:none; border-radius:10px; font-weight:bold; cursor:pointer; color:black; font-size:16px;">
       OPEN (15 ⭐)
     </button>
-    <div id="skinsList" style="margin-top:15px; max-height:200px; overflow-y:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px;"></div>
+    <div id="skinsList" style="margin-top:15px; display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; max-height:150px; overflow-y:auto; padding:5px;"></div>
   </div>
 </div>
 
@@ -357,9 +405,7 @@
     menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
 
-  function openInventory() {
-    window.location.href = "inventory.html";
-  }
+  function openInventory() { window.location.href = "inventory.html"; }
 
   const drops = [
     { name: "Glock-18 Sand Dune", chance: 18, price: 1 },
@@ -374,51 +420,40 @@
     { name: "AWP Pit Viper", chance: 3, price: 5 }
   ];
 
-  function getDrop() {
-    let rand = Math.random() * 100;
-    let sum = 0;
-    for (let item of drops) {
-      sum += item.chance;
-      if (rand <= sum) return item;
-    }
-  }
-
   function openCase(price) {
     if (stars < price) { alert("Недостатньо ⭐"); return; }
     stars -= price;
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
-    const item = getDrop();
+    
+    let rand = Math.random() * 100;
+    let sum = 0, item = drops[0];
+    for (let d of drops) { sum += d.chance; if (rand <= sum) { item = d; break; } }
+    
     let items = JSON.parse(localStorage.getItem("items") || "[]");
     items.push(item);
     localStorage.setItem("items", JSON.stringify(items));
     alert("🎉 Тобі випало: " + item.name);
   }
 
+  const promoCodes = { "FREE10": 10, "BONUS50": 50, "CS2": 5, "SLOOBY": 100 };
   function openPromo() { document.getElementById("promoModal").style.display = "block"; }
   function closePromo() { document.getElementById("promoModal").style.display = "none"; }
 
-  const promoCodes = { "FREE10": 10, "BONUS50": 50, "CS2": 5, "SLOOBY": 100 };
-
   function applyPromo() {
     let code = document.getElementById("promoInput").value.trim().toUpperCase();
-    if (!code) { alert("Введи промокод"); return; }
     let used = JSON.parse(localStorage.getItem("usedPromo") || "[]");
-    if (used.includes(code)) { alert("Цей промокод вже використаний ❌"); return; }
+    if (used.includes(code)) { alert("Вже використано ❌"); return; }
     if (promoCodes[code]) {
       stars += promoCodes[code];
-      localStorage.setItem("stars", stars);
-      document.getElementById("balance").innerText = stars;
       used.push(code);
       localStorage.setItem("usedPromo", JSON.stringify(used));
-      alert("Промокод активовано ✅ +" + promoCodes[code] + " ⭐");
+      localStorage.setItem("stars", stars);
+      document.getElementById("balance").innerText = stars;
+      alert("Додано " + promoCodes[code] + " ⭐");
       closePromo();
-    } else { alert("Невірний промокод ❌"); }
+    } else { alert("Невірний код ❌"); }
   }
-
-  document.addEventListener("click", function(e) {
-    if (!e.target.closest(".profile")) { document.getElementById("menu").style.display = "none"; }
-  });
 
   const glockSkins = [
     "Wasteland Rebel","Bullet Queen","Neo-Noir","Gold Toof","AXIA","Water Elemental",
@@ -429,8 +464,8 @@
     "Blue Fissure","Candy Apple","Reactor"
   ];
 
-  let preparedWin = null;
   let isSpinning = false;
+  let winningIndex = null;
 
   function getSkinFile(name) {
     if (name === "Moonrise") return "glock18_m.png";
@@ -439,7 +474,6 @@
   }
 
   function startRoulette() {
-    // ВХІД БЕЗ ПЕРЕВІРКИ БАЛАНСУ
     const modal = document.getElementById("rouletteModal");
     const track = document.getElementById("rouletteTrack");
     const list = document.getElementById("skinsList");
@@ -450,47 +484,44 @@
     track.innerHTML = "";
     list.innerHTML = "";
 
-    let full = [];
-    for (let i = 0; i < 10; i++) full = full.concat(glockSkins);
+    let fullList = [];
+    for(let i=0; i<6; i++) fullList = fullList.concat(glockSkins);
 
-    full.forEach(name => {
-      track.innerHTML += `<div style="min-width:100px; text-align:center;"><img src="${getSkinFile(name)}" style="width:80px;height:60px;object-fit:contain;"></div>`;
+    fullList.forEach(name => {
+      track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(name)}"></div>`;
     });
 
     glockSkins.forEach(name => {
-      list.innerHTML += `<img src="${getSkinFile(name)}" style="width:100%;height:45px;object-fit:contain; opacity:0.6;">`;
+      list.innerHTML += `<img src="${getSkinFile(name)}" style="width:100%; opacity:0.6;">`;
     });
 
-    preparedWin = Math.floor(Math.random() * glockSkins.length);
+    winningIndex = 120 + Math.floor(Math.random() * glockSkins.length);
   }
 
   function spinRoulette() {
     if (isSpinning) return;
     if (stars < 15) { alert("Недостатньо ⭐"); return; }
 
-    // ЗНІМАННЯ ЗІРОК ПРИ КРУТІННІ
     stars -= 15;
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
     isSpinning = true;
 
     const track = document.getElementById("rouletteTrack");
-    const itemWidth = 110; 
-    const winIndex = 70 + preparedWin; 
-    const containerWidth = track.parentElement.offsetWidth;
-    const offset = (winIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+    const itemWidth = 100;
+    const containerWidth = document.querySelector('.roulette-window').offsetWidth;
+    const offset = (winningIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
 
     track.style.transition = "transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)";
     track.style.transform = `translateX(-${offset}px)`;
 
     setTimeout(() => {
-      // ПРАВИЛЬНИЙ СКІН В ІНВЕНТАР
-      const wonName = glockSkins[preparedWin];
-      let items = JSON.parse(localStorage.getItem("items") || "[]");
-      items.push({ name: "Glock-18 " + wonName, price: 3 });
-      localStorage.setItem("items", JSON.stringify(items));
+      const realWinName = glockSkins[winningIndex % glockSkins.length];
+      let inv = JSON.parse(localStorage.getItem("items") || "[]");
+      inv.push({ name: "Glock-18 " + realWinName, price: 5 });
+      localStorage.setItem("items", JSON.stringify(inv));
 
-      alert("🎉 Випало: Glock-18 " + wonName);
+      alert("🎉 Випало: Glock-18 " + realWinName);
       isSpinning = false;
       closeRoulette();
     }, 4500);
@@ -500,6 +531,10 @@
     if (isSpinning) return;
     document.getElementById("rouletteModal").style.display = "none";
   }
+
+  document.addEventListener("click", function(e) {
+    if (!e.target.closest(".profile")) document.getElementById("menu").style.display = "none";
+  });
 </script>
 </body>
 </html>

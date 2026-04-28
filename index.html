@@ -36,9 +36,7 @@
       font-weight: bold;
     }
 
-    .balance-box span {
-      color: gold;
-    }
+    .balance-box span { color: gold; }
 
     .add-btn {
       background: #ff9f43;
@@ -102,9 +100,7 @@
       transition: 0.25s;
     }
 
-    .case:hover {
-      transform: scale(1.05);
-    }
+    .case:hover { transform: scale(1.05); }
 
     .case-box {
       border-radius: 18px;
@@ -126,6 +122,7 @@
       object-fit: contain;
     }
 
+    /* Рамки звичайних кейсів */
     .case:nth-child(1) .case-box { border: 2px solid #cd7f32; box-shadow: 0 0 10px #cd7f32; }
     .case:nth-child(2) .case-box { border: 2px solid #c0c0c0; box-shadow: 0 0 10px #c0c0c0; }
     .case:nth-child(3) .case-box { border: 2px solid gold; box-shadow: 0 0 10px gold; }
@@ -133,27 +130,17 @@
     .case:nth-child(5) .case-box { border: 2px solid #ff3c6f; box-shadow: 0 0 10px #ff3c6f; }
     .case:nth-child(6) .case-box { border: 2px solid #00eaff; box-shadow: 0 0 10px #00eaff; }
 
-    .purple-case {
-      border: 2px solid #a855f7;
-      box-shadow: 0 0 12px #a855f7;
-    }
+    /* Спеціальні кейси */
+    .purple-case { border: 2px solid #a855f7; box-shadow: 0 0 12px #a855f7; }
+    .white-case { border: 2px solid #ffffff; box-shadow: 0 0 12px #ffffff; }
 
-    .title {
-      margin-top: 6px;
-      font-size: 14px;
-      font-weight: bold;
-    }
+    .title { margin-top: 6px; font-size: 14px; font-weight: bold; }
+    .price { color: gold; margin-top: 2px; font-size: 13px; }
 
-    .price {
-      color: gold;
-      margin-top: 2px;
-      font-size: 13px;
-    }
-
+    /* МОДАЛКА ПРОМО */
     .promo-modal {
       position: fixed;
-      top: 20px;
-      left: 50%;
+      top: 20px; left: 50%;
       transform: translateX(-50%);
       display: none;
       z-index: 1000;
@@ -197,12 +184,12 @@
 
     .close-btn {
       position: absolute;
-      top: 10px;
-      right: 15px;
+      top: 10px; right: 15px;
       cursor: pointer;
       font-size: 20px;
     }
 
+    /* РУЛЕТКА */
     #rouletteModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -234,9 +221,7 @@
 
     .pointer {
       position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
+      left: 50%; top: 0; bottom: 0;
       width: 2px;
       background: #ff9f43;
       z-index: 20;
@@ -247,9 +232,7 @@
     #rouletteTrack {
       display: flex;
       position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
+      left: 0; top: 0; height: 100%;
       transition: none;
     }
 
@@ -318,10 +301,19 @@
   <div class="case" onclick="openCase(10)"><div class="case-box"><div class="case-img-box"><img src="platinum.png"></div><div class="title">Platinum</div><div class="price">10 ⭐</div></div></div>
   <div class="case" onclick="openCase(25)"><div class="case-box"><div class="case-img-box"><img src="ruby.png"></div><div class="title">Ruby</div><div class="price">25 ⭐</div></div></div>
   <div class="case" onclick="openCase(50)"><div class="case-box"><div class="case-img-box"><img src="diamond.png"></div><div class="title">Diamond</div><div class="price">50 ⭐</div></div></div>
-  <div class="case" onclick="startRoulette()">
+  
+  <div class="case" onclick="startRoulette('glock')">
     <div class="case-box purple-case">
       <div class="case-img-box"><img src="glock_case.png"></div>
       <div class="title">Glock Case</div>
+      <div class="price">15 ⭐</div>
+    </div>
+  </div>
+
+  <div class="case" onclick="startRoulette('usp')">
+    <div class="case-box white-case">
+      <div class="case-img-box"><img src="usp_case.png"></div>
+      <div class="title">USP-S Case</div>
       <div class="price">15 ⭐</div>
     </div>
   </div>
@@ -341,12 +333,12 @@
 <div id="rouletteModal">
   <div class="roulette-content">
     <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; font-size:20px; cursor:pointer;">✖</div>
-    <h3 style="text-align:center; margin-top:0;">Glock-18 Case</h3>
+    <h3 id="modalTitle" style="text-align:center; margin-top:0;">Case</h3>
     <div class="roulette-window">
       <div class="pointer"></div>
       <div id="rouletteTrack"></div>
     </div>
-    <button onclick="spinRoulette()" style="width:100%; padding:15px; background:#ff9f43; border:none; border-radius:10px; font-weight:bold; cursor:pointer; color:black; font-size:16px;">
+    <button id="openBtn" style="width:100%; padding:15px; background:#ff9f43; border:none; border-radius:10px; font-weight:bold; cursor:pointer; color:black; font-size:16px;">
       OPEN (15 ⭐)
     </button>
     <div id="skinsList"></div>
@@ -371,8 +363,7 @@
     menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
 
-  function openInventory() { window.location.href = "inventory.html"; }
-
+  // СПИСКИ СКІНІВ
   const glockSkins = [
     { name: "Wasteland Rebel", weight: 1 }, { name: "Bullet Queen", weight: 1 },
     { name: "Neo-Noir", weight: 1 }, { name: "Gold Toof", weight: 2 },
@@ -393,36 +384,65 @@
     { name: "Reactor", weight: 50 }
   ];
 
+  const uspSkins = [
+    { name: "Neo-Noir", weight: 1 }, { name: "Kill Confirmed", weight: 1 },
+    { name: "The Traitor", weight: 1 }, { name: "Orion", weight: 2 },
+    { name: "Cortex", weight: 4 }, { name: "Monster Mashup", weight: 4 },
+    { name: "Overgrowth", weight: 6 }, { name: "Orange Anolis", weight: 8 },
+    { name: "Ticket to Hell", weight: 10 }, { name: "Flashback", weight: 12 },
+    { name: "Ancient Visions", weight: 15 }, { name: "Guardian", weight: 18 },
+    { name: "Cyrex", weight: 20 }, { name: "Road Rash", weight: 22 },
+    { name: "Forest Leaves", weight: 25 }, { name: "Pathfinder", weight: 28 },
+    { name: "Royal Blue", weight: 30 }, { name: "Para Green", weight: 35 },
+    { name: "Purple DDPAT", weight: 35 }, { name: "Night Ops", weight: 40 },
+    { name: "Business Class", weight: 40 }, { name: "Stainless", weight: 45 },
+    { name: "Blood Tiger", weight: 45 }, { name: "Black Lotus", weight: 50 },
+    { name: "Check Engine", weight: 50 }, { name: "Torque", weight: 55 },
+    { name: "Lead Conduit", weight: 60 }
+  ];
+
   let isSpinning = false;
 
-  function getSkinFile(name) {
-    if (name === "Moonrise") return "glock18_m.png";
-    if (name === "Neo-Noir") return "glock18_neo.png";
-    return "glock18_" + name.toLowerCase().replace(/ /g, "_") + ".png";
+  function getSkinFile(name, type) {
+    let prefix = type === 'glock' ? 'glock18_' : 'usp_';
+    let firstWord = name.split(' ')[0].toLowerCase();
+    
+    // Спеціальні випадки для коротких назв
+    if (name === "Moonrise") return prefix + "m.png";
+    if (name === "Neo-Noir") return prefix + "neo.png";
+    
+    return prefix + firstWord + ".png";
   }
 
-  function startRoulette() {
+  function startRoulette(type) {
     const modal = document.getElementById("rouletteModal");
     const track = document.getElementById("rouletteTrack");
     const list = document.getElementById("skinsList");
+    const title = document.getElementById("modalTitle");
+    const skins = type === 'glock' ? glockSkins : uspSkins;
 
+    title.innerText = type === 'glock' ? "Glock-18 Case" : "USP-S Case";
     modal.style.display = "flex";
     track.style.transition = "none";
     track.style.transform = "translateX(0)";
     track.innerHTML = "";
     list.innerHTML = "";
 
+    // Наповнення рулетки випадковими скінами
     for(let i=0; i<100; i++) {
-      const rnd = glockSkins[Math.floor(Math.random() * glockSkins.length)];
-      track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name)}"></div>`;
+      const rnd = skins[Math.floor(Math.random() * skins.length)];
+      track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name, type)}"></div>`;
     }
 
-    glockSkins.forEach(s => {
-      list.innerHTML += `<img src="${getSkinFile(s.name)}" title="${s.name}">`;
+    // Список скінів знизу
+    skins.forEach(s => {
+      list.innerHTML += `<img src="${getSkinFile(s.name, type)}" title="${s.name}">`;
     });
+
+    document.getElementById("openBtn").onclick = () => spinRoulette(type);
   }
 
-  function spinRoulette() {
+  function spinRoulette(type) {
     if (isSpinning) return;
     if (stars < 15) { alert("Недостатньо ⭐"); return; }
 
@@ -431,11 +451,12 @@
     document.getElementById("balance").innerText = stars;
     isSpinning = true;
 
-    const totalWeight = glockSkins.reduce((s, i) => s + i.weight, 0);
+    const skins = type === 'glock' ? glockSkins : uspSkins;
+    const totalWeight = skins.reduce((s, i) => s + i.weight, 0);
     let rnd = Math.random() * totalWeight;
-    let winner = glockSkins[glockSkins.length - 1];
+    let winner = skins[skins.length - 1];
 
-    for (let s of glockSkins) {
+    for (let s of skins) {
       if (rnd < s.weight) { winner = s; break; }
       rnd -= s.weight;
     }
@@ -443,7 +464,7 @@
     const winPos = 80;
     const track = document.getElementById("rouletteTrack");
     const items = track.querySelectorAll('.roulette-item');
-    items[winPos].innerHTML = `<img src="${getSkinFile(winner.name)}">`;
+    items[winPos].innerHTML = `<img src="${getSkinFile(winner.name, type)}">`;
 
     const itemWidth = 100;
     const containerWidth = document.querySelector('.roulette-window').offsetWidth;
@@ -454,9 +475,11 @@
 
     setTimeout(() => {
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
-      inv.push({ name: "Glock-18 " + winner.name, price: 5 });
+      let fullName = (type === 'glock' ? "Glock-18 " : "USP-S ") + winner.name;
+      inv.push({ name: fullName, price: 5 });
       localStorage.setItem("items", JSON.stringify(inv));
-      alert("🎉 Випало: Glock-18 " + winner.name);
+      
+      alert("🎉 Випало: " + fullName);
       isSpinning = false;
       track.style.transition = "none";
       track.style.transform = "translateX(0)";
@@ -471,33 +494,16 @@
   function openPromo() { document.getElementById("promoModal").style.display = "block"; }
   function closePromo() { document.getElementById("promoModal").style.display = "none"; }
   
-  const promoCodes = { "FREE10": 10, "BONUS50": 50, "CS2": 5, "SLOOBY": 100 };
-  
   function applyPromo() {
     let input = document.getElementById("promoInput").value.trim();
-    let code = input.toUpperCase();
-    let used = JSON.parse(localStorage.getItem("usedPromo") || "[]");
-
-    // Спеціальний нескінченний промокод "+"
     if (input === "+") {
       stars += 100;
       localStorage.setItem("stars", stars);
       document.getElementById("balance").innerText = stars;
-      alert("Додано 100 ⭐ (Вічний бонус!)");
+      alert("Додано 100 ⭐");
       return;
     }
-
-    // Звичайні промокоди
-    if (used.includes(code)) { alert("Вже використано ❌"); return; }
-    if (promoCodes[code]) {
-      stars += promoCodes[code];
-      used.push(code);
-      localStorage.setItem("usedPromo", JSON.stringify(used));
-      localStorage.setItem("stars", stars);
-      document.getElementById("balance").innerText = stars;
-      alert("Додано " + promoCodes[code] + " ⭐");
-      closePromo();
-    } else { alert("Невірний код ❌"); }
+    alert("Невірний код ❌");
   }
 
   function openCase(p) {
@@ -508,9 +514,12 @@
     alert("🎉 Випав предмет!");
   }
 
+  function openInventory() { window.location.href = "inventory.html"; }
+
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".profile")) document.getElementById("menu").style.display = "none";
   });
 </script>
+
 </body>
 </html>

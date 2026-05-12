@@ -14,7 +14,6 @@
       color: white;
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
-      /* Фіксуємо мінімальну висоту, щоб не було порожнечі знизу */
       min-height: 100vh;
     }
 
@@ -97,7 +96,6 @@
 
     .case-grid {
       display: grid;
-      /* Зробив колонки трохи ширшими, щоб вони заповнювали екран */
       grid-template-columns: repeat(3, 1fr);
       max-width: 400px;
       margin: 0 auto;
@@ -424,6 +422,7 @@
   }
 
   function startRoulette(type) {
+    if (isSpinning) return;
     const modal = document.getElementById("rouletteModal");
     const track = document.getElementById("rouletteTrack");
     const list = document.getElementById("skinsList");
@@ -431,6 +430,8 @@
 
     document.getElementById("modalTitle").innerText = type === 'glock' ? "Glock-18 Case" : "USP-S Case";
     modal.style.display = "flex";
+    
+    // Скидаємо трек перед початком
     track.style.transition = "none";
     track.style.transform = "translateX(0)";
     track.innerHTML = "";
@@ -465,7 +466,9 @@
     const track = document.getElementById("rouletteTrack");
     const winPos = 35; 
     track.querySelectorAll('.roulette-item')[winPos].innerHTML = `<img src="${getSkinFile(winner.name, type)}">`;
-    const offset = (winPos * 90) - (document.querySelector('.roulette-window').offsetWidth / 2) + 45;
+    
+    const windowWidth = document.querySelector('.roulette-window').offsetWidth;
+    const offset = (winPos * 90) - (windowWidth / 2) + 45;
 
     track.style.transition = "transform 8s cubic-bezier(0.15, 0, 0.15, 1)";
     track.style.transform = `translateX(-${offset}px)`;
@@ -474,8 +477,13 @@
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
       inv.push({ name: (type==='glock'?'Glock ':'USP ')+winner.name, price: 5 });
       localStorage.setItem("items", JSON.stringify(inv));
-      alert("🎉 " + winner.name);
+      
+      alert("🎉 Вітаємо! Вам випав предмет: " + winner.name);
+      
       isSpinning = false;
+      // Дозволяємо відкрити ще раз: скидаємо позицію після алерта
+      track.style.transition = "none";
+      track.style.transform = "translateX(0)";
     }, 8500);
   }
 

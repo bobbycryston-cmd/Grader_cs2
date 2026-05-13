@@ -16,12 +16,12 @@
       overflow-x: hidden;
     }
 
-    /* Верхня панель (Header) */
+    /* Універсальна шапка */
     .header {
       display: flex;
       justify-content: flex-end;
       padding: 12px; 
-      box-sizing: border-box;
+      position: relative;
     }
 
     .header-box {
@@ -33,19 +33,14 @@
       border-radius: 14px;
     }
 
-    .balance-box {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: bold;
-    }
-
+    .balance-box { font-weight: bold; }
     .balance-box span { color: gold; }
 
     .profile {
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
     }
 
     .avatar {
@@ -55,42 +50,57 @@
       background: #333;
     }
 
-    /* Заголовок та кнопки керування */
-    .inv-header {
-      text-align: center;
-      margin: 10px 0;
+    /* Випадаюче меню */
+    .menu {
+      position: absolute;
+      top: 65px;
+      right: 12px;
+      background: rgba(0,0,0,0.95);
+      padding: 12px;
+      border-radius: 12px;
+      width: 180px;
+      display: none;
+      z-index: 2000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     }
 
-    .inv-title {
-      font-size: 24px;
+    .menu button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: black;
+      background: #fff;
       font-weight: bold;
-      margin-bottom: 15px;
     }
+
+    /* Контент інвентарю */
+    .inv-content { text-align: center; }
+    .inv-title { font-size: 24px; font-weight: bold; margin: 10px 0; }
 
     .nav-controls {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 10px;
       margin-bottom: 20px;
     }
 
     .btn-control {
-      padding: 10px 20px;
+      padding: 10px 15px;
       border: none;
       border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.2s;
     }
-
     .btn-sell-all { background: #ff9f43; color: black; }
     .btn-back { background: rgba(255,255,255,0.1); color: white; }
 
-    /* Сітка інвентарю */
     #list {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
       padding: 15px;
       max-width: 500px;
       margin: 0 auto;
@@ -98,82 +108,51 @@
 
     .item {
       background: rgba(255,255,255,0.03);
-      border-radius: 15px;
+      border-radius: 12px;
       padding: 10px;
       text-align: center;
       border: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: transform 0.2s;
     }
 
-    .item:active { transform: scale(0.95); }
-
-    .item img {
-      width: 100%;
-      height: 60px;
-      object-fit: contain;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-    }
-
-    .item-name {
-      font-size: 10px;
-      font-weight: bold;
-      height: 24px;
-      overflow: hidden;
-      margin-bottom: 5px;
-      line-height: 1.2;
-    }
-
-    .item-price {
-      color: gold;
-      font-size: 11px;
-      margin-bottom: 8px;
-    }
+    .item img { width: 100%; height: 50px; object-fit: contain; margin-bottom: 5px; }
+    .item-name { font-size: 9px; font-weight: bold; height: 22px; overflow: hidden; }
+    .item-price { color: gold; font-size: 10px; margin: 5px 0; }
 
     .btn-item-sell {
       width: 100%;
-      padding: 7px;
+      padding: 5px;
       background: #ff4757;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 10px;
+      border-radius: 5px;
+      font-size: 9px;
       font-weight: bold;
-      cursor: pointer;
-    }
-
-    .empty-msg {
-      grid-column: 1 / -1;
-      text-align: center;
-      opacity: 0.4;
-      margin-top: 60px;
-      font-size: 14px;
     }
   </style>
 </head>
-
 <body>
 
 <div class="header">
   <div class="header-box">
-    <div class="balance-box">
-      <span id="balance">0</span> ⭐
-    </div>
-    <div class="profile">
+    <div class="balance-box"><span id="balance">0</span> ⭐</div>
+    <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar" src="">
       <div id="name">User</div>
     </div>
   </div>
+
+  <div class="menu" id="menu">
+    <button onclick="window.location.href='index.html'">🏠 Cases</button>
+    <button onclick="window.location.href='upgrade.html'">⚡ Upgrade</button>
+    <button onclick="toggleMenu()" style="background: #333; color: white;">❌ Close</button>
+  </div>
 </div>
 
-<div class="inv-header">
-  <div class="inv-title">Your Inventory</div>
+<div class="inv-content">
+  <div class="inv-title">Inventory</div>
   <div class="nav-controls">
     <button class="btn-control btn-sell-all" onclick="sellAll()">💰 Sell All</button>
-    <button class="btn-control btn-back" onclick="back()">⬅ Back</button>
+    <button class="btn-control btn-back" onclick="window.location.href='index.html'">⬅ Back</button>
   </div>
 </div>
 
@@ -181,81 +160,65 @@
 
 <script>
   const tg = window.Telegram.WebApp;
-  
-  // Дані користувача з Telegram
   const user = tg.initDataUnsafe.user;
+
   if (user) {
     document.getElementById("name").innerText = user.first_name;
     if (user.photo_url) document.getElementById("avatar").src = user.photo_url;
   }
 
-  function updateBalanceDisplay() {
-    let stars = localStorage.getItem("stars") || "0";
-    document.getElementById("balance").innerText = stars;
+  function toggleMenu() {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "block" ? "none" : "block";
   }
 
   function loadItems() {
     let items = JSON.parse(localStorage.getItem("items") || "[]");
+    document.getElementById("balance").innerText = localStorage.getItem("stars") || "0";
     let html = "";
 
     if (items.length === 0) {
-      document.getElementById("list").innerHTML = '<div class="empty-msg">Тут поки порожньо... <br>Відкрий кілька кейсів! 📦</div>';
-      updateBalanceDisplay();
+      document.getElementById("list").innerHTML = "<div style='grid-column:1/-1; opacity:0.5; margin-top:50px;'>Empty</div>";
       return;
     }
 
     items.forEach((item, i) => {
-      let imgSrc = item.img || ""; 
       html += `
         <div class="item">
-          <img src="${imgSrc}">
+          <img src="${item.img || ''}">
           <div class="item-name">${item.name}</div>
           <div class="item-price">${item.price || 5} ⭐</div>
           <button class="btn-item-sell" onclick="sell(${i})">Sell</button>
-        </div>
-      `;
+        </div>`;
     });
-
     document.getElementById("list").innerHTML = html;
-    updateBalanceDisplay();
   }
 
   function sell(i) {
     let items = JSON.parse(localStorage.getItem("items") || "[]");
     let stars = parseInt(localStorage.getItem("stars") || "0");
-    
     stars += (items[i].price || 5);
     localStorage.setItem("stars", stars);
-
     items.splice(i, 1);
     localStorage.setItem("items", JSON.stringify(items));
-
     loadItems();
   }
 
   function sellAll() {
     let items = JSON.parse(localStorage.getItem("items") || "[]");
-    if (items.length === 0) return;
-
-    if(!confirm("Продати всі предмети?")) return;
-
-    let total = items.reduce((sum, item) => sum + (item.price || 5), 0);
-    let stars = parseInt(localStorage.getItem("stars") || "0");
-
-    stars += total;
+    if (!items.length) return;
+    let total = items.reduce((s, item) => s + (item.price || 5), 0);
+    let stars = parseInt(localStorage.getItem("stars") || "0") + total;
     localStorage.setItem("stars", stars);
-    localStorage.setItem("items", JSON.stringify([]));
-
-    alert("Продано за " + total + " ⭐");
+    localStorage.setItem("items", "[]");
     loadItems();
   }
 
-  function back() {
-    window.location.href = "index.html";
-  }
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".profile") && !e.target.closest(".menu")) document.getElementById("menu").style.display = "none";
+  });
 
   loadItems();
 </script>
-
 </body>
 </html>

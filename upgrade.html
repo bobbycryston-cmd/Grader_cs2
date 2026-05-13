@@ -19,62 +19,62 @@
       overflow-x: hidden;
     }
 
-    /* Універсальна шапка */
+    /* Шапка як в index.html */
     .header { width: 100%; display: flex; justify-content: flex-end; padding: 12px; box-sizing: border-box; position: relative; }
-    .header-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 14px; }
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; }
-    .balance-box span { color: gold; font-weight: bold; }
+    .header-box {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 14px;
+    }
+    .header-btn { background: #ff9f43; border: none; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; color: black; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #333; }
+    .profile { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 
     /* Меню */
     .menu {
-      position: absolute; top: 65px; right: 12px; background: rgba(0,0,0,0.95);
+      position: absolute; top: 70px; right: 12px; background: rgba(15, 12, 33, 0.98);
       padding: 12px; border-radius: 12px; width: 180px; display: none; z-index: 2000;
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    .menu button { width: 100%; margin-top: 8px; padding: 10px; border: none; border-radius: 8px; font-weight: bold; }
+    .menu button { width: 100%; margin-top: 8px; padding: 12px; border: none; border-radius: 8px; font-weight: bold; background: white; color: black; cursor: pointer; }
 
-    /* Рулетка */
-    .upgrade-center { position: relative; width: 200px; height: 200px; margin: 10px 0; }
+    /* Апгрейд інтерфейс */
+    .upgrade-center { position: relative; width: 220px; height: 220px; margin: 15px 0; }
     canvas { width: 100%; height: 100%; transform: rotate(-90deg); }
     .chance-info { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-    .chance-info span { font-size: 24px; font-weight: bold; color: #ff9f43; }
+    .chance-info span { font-size: 28px; font-weight: bold; color: #ff9f43; }
 
-    /* Списки скінів */
-    .skin-row { display: flex; overflow-x: auto; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
+    .skin-row { display: flex; overflow-x: auto; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; -webkit-overflow-scrolling: touch; }
     .skin-row::-webkit-scrollbar { display: none; }
-    .skin-card { 
-      min-width: 80px; background: rgba(255,255,255,0.05); padding: 8px; 
-      border-radius: 10px; text-align: center; border: 1px solid transparent; 
-    }
+    .skin-card { min-width: 90px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid transparent; transition: 0.2s; }
     .skin-card.selected { border-color: #ff9f43; background: rgba(255,159,67,0.1); }
-    .skin-card img { width: 60px; height: 40px; object-fit: contain; }
-    .skin-card div { font-size: 9px; margin-top: 3px; }
+    .skin-card img { width: 70px; height: 50px; object-fit: contain; }
+    .skin-card div { font-size: 10px; margin-top: 5px; }
 
     .slots { display: flex; gap: 15px; margin: 10px 0; }
-    .slot { 
-      width: 100px; height: 120px; background: rgba(255,255,255,0.05); 
-      border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px;
-    }
-    .slot img { width: 70px; height: 45px; object-fit: contain; }
+    .slot { width: 110px; height: 130px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; text-align: center; }
+    .slot img { width: 80px; height: 55px; object-fit: contain; margin-bottom: 5px; }
 
-    .btn-upgrade { width: 85%; padding: 15px; background: #ff9f43; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; margin: 10px 0; }
-    h4 { margin: 10px 15px 5px; align-self: flex-start; font-size: 14px; color: #aaa; }
+    .btn-upgrade { width: 85%; padding: 18px; background: #ff9f43; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; margin: 15px 0; cursor: pointer; color: black; }
+    .btn-upgrade:disabled { opacity: 0.3; cursor: not-allowed; }
+    
+    h4 { margin: 15px 15px 5px; align-self: flex-start; font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
   </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-box">
-    <div class="balance-box"><span id="balance">0</span> ⭐</div>
+    <div style="font-weight:bold; font-size: 16px;"><span id="balance" style="color:#f1c40f;">0</span> ⭐</div>
+    <button class="header-btn" onclick="alert('Soon')">+</button>
+    <button class="header-btn" onclick="alert('Promo Soon')">🎟</button>
     <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar">
       <div id="name">User</div>
     </div>
   </div>
   <div class="menu" id="menu">
-    <button onclick="window.location.href='index.html'">🏠 Cases</button>
+    <button onclick="window.location.href='index.html'">🏠 Головна</button>
     <button onclick="window.location.href='inventory.html'">🎒 Inventory</button>
-    <button onclick="toggleMenu()" style="background: #333; color: white;">❌ Close</button>
   </div>
 </div>
 
@@ -92,8 +92,11 @@
 
 <h4>Your Inventory</h4>
 <div class="skin-row" id="userInv"></div>
-<h4>Targets</h4>
+
+<h4>Possible Targets</h4>
 <div class="skin-row" id="targetInv"></div>
+
+<button style="margin:25px; background:none; border:none; color:white; text-decoration:underline; cursor:pointer;" onclick="window.location.href='index.html'">⬅ Back</button>
 
 <script>
   let items = JSON.parse(localStorage.getItem("items") || "[]");
@@ -103,8 +106,14 @@
     { name: "Glock Wasteland Rebel", price: 100, img: "glock18_wasteland_rebel.png" },
     { name: "USP-S Kill Confirmed", price: 150, img: "usp_kill.png" },
     { name: "Glock Neo-Noir", price: 70, img: "glock18_neo.png" },
-    { name: "Glock Water Elemental", price: 40, img: "glock18_water_elemental.png" }
+    { name: "Glock Water Elemental", price: 40, img: "glock18_water_elemental.png" },
+    { name: "USP-S Neo-Noir", price: 60, img: "usp_neo.png" }
   ];
+
+  function toggleMenu() {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "block" ? "none" : "block";
+  }
 
   function init() {
     const user = window.Telegram.WebApp.initDataUnsafe.user;
@@ -112,19 +121,13 @@
       document.getElementById("name").innerText = user.first_name;
       if(user.photo_url) document.getElementById("avatar").src = user.photo_url;
     }
-    render();
-    draw(0);
-  }
-
-  function toggleMenu() {
-    const m = document.getElementById("menu");
-    m.style.display = m.style.display === "block" ? "none" : "block";
+    render(); draw(0);
   }
 
   function render() {
     document.getElementById("balance").innerText = localStorage.getItem("stars") || "0";
     const uInv = document.getElementById("userInv");
-    uInv.innerHTML = items.length ? "" : "Empty";
+    uInv.innerHTML = items.length ? "" : "<div style='padding:20px; opacity:0.5;'>Empty</div>";
     items.forEach((item, i) => {
       uInv.innerHTML += `<div class="skin-card" onclick="selectIn(${i})" id="u-${i}"><img src="${item.img}"><div>${item.price}⭐</div></div>`;
     });
@@ -138,6 +141,8 @@
   function selectIn(i) {
     if(isSpinning) return;
     selIn = { ...items[i], index: i };
+    document.querySelectorAll('#userInv .skin-card').forEach(el => el.classList.remove('selected'));
+    document.getElementById(`u-${i}`).classList.add('selected');
     document.getElementById("inSlot").innerHTML = `<img src="${selIn.img}"><div>${selIn.price}⭐</div>`;
     update();
   }
@@ -145,6 +150,8 @@
   function selectOut(i) {
     if(isSpinning) return;
     selOut = targets[i];
+    document.querySelectorAll('#targetInv .skin-card').forEach(el => el.classList.remove('selected'));
+    document.getElementById(`t-${i}`).classList.add('selected');
     document.getElementById("outSlot").innerHTML = `<img src="${selOut.img}"><div>${selOut.price}⭐</div>`;
     update();
   }
@@ -159,22 +166,23 @@
   }
 
   function draw(p, a = 0) {
-    const ctx = document.getElementById("wheelCanvas").getContext("2d");
-    ctx.clearRect(0,0,300,300);
-    ctx.lineWidth = 15;
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,300,300); ctx.lineWidth = 15;
     ctx.beginPath(); ctx.arc(150,150,130,0,Math.PI*2); ctx.strokeStyle="#222"; ctx.stroke();
     ctx.beginPath(); ctx.arc(150,150,130,0,Math.PI*2*p); ctx.strokeStyle="#ff9f43"; ctx.stroke();
     if(isSpinning) {
       ctx.save(); ctx.translate(150,150); ctx.rotate(a);
-      ctx.beginPath(); ctx.moveTo(110,0); ctx.lineTo(145,0); ctx.strokeStyle="white"; ctx.lineWidth=5; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(110,0); ctx.lineTo(145,0); ctx.strokeStyle="white"; ctx.lineWidth=6; ctx.stroke();
       ctx.restore();
     }
   }
 
   function startUpgrade() {
+    if(isSpinning) return;
     isSpinning = true; document.getElementById("upgradeBtn").disabled = true;
     let c = selIn.price / selOut.price;
-    let start = null, duration = 3000, final = (Math.PI*2*8) + (Math.random()*Math.PI*2);
+    let start = null, duration = 3500, final = (Math.PI*2*10) + (Math.random()*Math.PI*2);
     function anim(t) {
       if(!start) start = t;
       let prog = t - start;
@@ -184,15 +192,23 @@
       else {
         isSpinning = false;
         if((rot % (Math.PI*2)) <= (c * Math.PI*2)) {
-          alert("Success!"); items.splice(selIn.index, 1); items.push(selOut);
+          alert("🎉 Success! Ви отримали " + selOut.name);
+          items.splice(selIn.index, 1); items.push(selOut);
         } else {
-          alert("Failed!"); items.splice(selIn.index, 1);
+          alert("💀 Failed! Скін було втрачено.");
+          items.splice(selIn.index, 1);
         }
         localStorage.setItem("items", JSON.stringify(items)); location.reload();
       }
     }
     requestAnimationFrame(anim);
   }
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".profile") && !e.target.closest(".menu")) {
+      document.getElementById("menu").style.display = "none";
+    }
+  });
 
   init();
 </script>

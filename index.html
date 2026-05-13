@@ -431,7 +431,6 @@
     document.getElementById("modalTitle").innerText = type === 'glock' ? "Glock-18 Case" : "USP-S Case";
     modal.style.display = "flex";
     
-    // Скидаємо трек перед початком
     track.style.transition = "none";
     track.style.transform = "translateX(0)";
     track.innerHTML = "";
@@ -475,13 +474,19 @@
 
     setTimeout(() => {
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
-      inv.push({ name: (type==='glock'?'Glock ':'USP ')+winner.name, price: 5 });
+      
+      // КЛЮЧОВЕ ОНОВЛЕННЯ ТУТ: додаємо поле img, щоб інвентар його бачив
+      inv.push({ 
+        name: (type==='glock'?'Glock ':'USP ')+winner.name, 
+        price: 5, 
+        img: getSkinFile(winner.name, type) 
+      });
+      
       localStorage.setItem("items", JSON.stringify(inv));
       
       alert("🎉 Вітаємо! Вам випав предмет: " + winner.name);
       
       isSpinning = false;
-      // Дозволяємо відкрити ще раз: скидаємо позицію після алерта
       track.style.transition = "none";
       track.style.transform = "translateX(0)";
     }, 8500);

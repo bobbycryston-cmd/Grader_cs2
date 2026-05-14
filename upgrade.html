@@ -33,10 +33,11 @@
       text-align: center; padding: 10px; position: relative;
     }
     .side-panel img { width: 100px; height: 70px; object-fit: contain; margin-bottom: 10px; }
+    
     .reset-btn {
       position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.1);
-      border: none; color: white; border-radius: 50%; width: 22px; height: 22px;
-      cursor: pointer; font-size: 14px; line-height: 1; display: none;
+      border: none; color: white; border-radius: 50%; width: 24px; height: 24px;
+      cursor: pointer; font-size: 16px; display: none; z-index: 10;
     }
 
     .wheel-box { position: relative; width: 240px; height: 240px; flex-shrink: 0; }
@@ -59,7 +60,7 @@
     .btn-main-upgrade:disabled { opacity: 0.2; }
 
     .inventory-section { width: 100%; margin-top: 20px; }
-    .skin-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; min-height: 80px; }
+    .skin-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; min-height: 100px; }
     .skin-item {
       min-width: 100px; background: rgba(255,255,255,0.03); padding: 10px;
       border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
@@ -83,7 +84,7 @@
 
 <div class="upgrade-container">
   <div class="main-ui">
-    <div class="side-panel" id="inPanel">
+    <div class="side-panel">
       <button class="reset-btn" id="resetIn" onclick="resetSelection('in')">×</button>
       <div id="inContent">Select Skin</div>
     </div>
@@ -91,7 +92,7 @@
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
       <div class="chance-display" id="chanceText">0%</div>
     </div>
-    <div class="side-panel" id="outPanel">
+    <div class="side-panel">
       <button class="reset-btn" id="resetOut" onclick="resetSelection('out')">×</button>
       <div id="outContent">Target Skin</div>
     </div>
@@ -120,9 +121,6 @@
   let selIn = null, selOut = null, spinning = false;
 
   const targets = [
-    { name: "P250 | Sand Dune", price: 2, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpopujbEgdi1vX3fDJ9-966mYyZnvb6Nb7VqWZU7Mxkh9bN9J7yjRrhrUo6Z2mgLIPDclA3YF6C-gS5k-u81MW7uJzAnHFguygh7H3UnAv3309pAnY46g" },
-    { name: "AK-47 | Safari Mesh", price: 5, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV092lnYmGmOH8Nrrul39I-8Njie398I701wa3rUdsYj_1I46XIFBoYF2D_lXsxLrr1JS47p_KzXU173Irt2GdwUI8-Y6pXw" },
-    { name: "M4A1-S | Boreal Forest", price: 10, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhz2v_Nfz5H_uO1mY-0m_7zO6-fzj9V7cJ0n_rE89SmiQPmqhY-NWCid9XAcVNoNFmD_AW6k-vn18S76cyYyHZh7yIn7GeOnhS-n1gSOWE9lS6a" },
     { name: "Glock-18 | Water Elemental", price: 40, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3fDJ954jjg87IxvX3P77em29U-8xeh-zF_Jn4xgXirhVqY2_1ctfDIQ9vYV6B_FntxL_rhp_vup7AnXNq73R37S3Umwv3309_9XG7XQ" },
     { name: "USP-S | Neo-Noir", price: 100, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8j_OrfdqWhe5sN4mOTE8bP4jVC9vh5yYG7wI47HIAU4YF3S81e5xb_rh5S0vszInScy73Yh4S6JnECpwUYb-p8pEw" },
     { name: "AK-47 | Asiimov", price: 300, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrY6i2VHt-0s9ODuicY_AcVNoMF_R_AK9kO_n08S6vJvAnXcx6Sclt3_D30vgbe_72j0" },
@@ -161,11 +159,10 @@
     ctx.strokeStyle = "#16122d"; ctx.lineWidth = 25; ctx.stroke();
 
     if (chance > 0) {
-      const halfArc = (Math.PI * 2 * chance) / 2;
+      const arcSize = Math.PI * 2 * chance;
       ctx.beginPath();
-      ctx.arc(cx, cy, r, (Math.PI/2) - halfArc, (Math.PI/2) + halfArc);
-      ctx.strokeStyle = "#ff9f43";
-      ctx.lineWidth = 25;
+      ctx.arc(cx, cy, r, (Math.PI/2) - (arcSize/2), (Math.PI/2) + (arcSize/2));
+      ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 25;
       ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
       ctx.stroke();
       ctx.shadowBlur = 0;
@@ -178,8 +175,7 @@
     ctx.moveTo(r - 35, -12);
     ctx.lineTo(r + 15, 0);
     ctx.lineTo(r - 35, 12);
-    ctx.fillStyle = "white";
-    ctx.fill();
+    ctx.fillStyle = "white"; ctx.fill();
     ctx.restore();
   }
 
@@ -232,17 +228,22 @@
 
     const chance = Math.min(selIn.price / selOut.price, 0.95);
     const win = Math.random() < chance;
-    const spins = 7 + Math.random() * 3;
-    const halfArc = (chance * Math.PI * 2) / 2;
+    const spins = 8 + Math.random() * 2;
+    const arcSize = Math.PI * 2 * chance;
     
-    let targetAngle = win ? (Math.PI / 2) + (Math.random() * (halfArc * 2) - halfArc) : (Math.PI / 2) + halfArc + Math.random() * (Math.PI * 2 - halfArc * 2);
+    let targetAngle;
+    if(win) {
+      targetAngle = (Math.PI / 2) + (Math.random() * arcSize - (arcSize / 2));
+    } else {
+      targetAngle = (Math.PI / 2) + (arcSize / 2) + Math.random() * (Math.PI * 2 - arcSize);
+    }
 
     const finalAngle = (Math.PI * 2 * spins) + targetAngle;
     let start = null;
 
     function animate(t) {
       if(!start) start = t;
-      let prog = (t - start) / 4500;
+      let prog = (t - start) / 5000;
       if(prog > 1) prog = 1;
       let ease = 1 - Math.pow(1 - prog, 4);
       draw(chance, finalAngle * ease);
@@ -250,7 +251,7 @@
       else {
         setTimeout(() => {
           if(win) {
-            alert("SUCCESS!");
+            alert("SUCCESS! " + selOut.name);
             items.push(selOut);
           } else alert("FAILED!");
           items.splice(selIn.index, 1);

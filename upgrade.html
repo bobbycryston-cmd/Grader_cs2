@@ -8,18 +8,11 @@
 
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+      margin: 0; font-family: Arial, sans-serif;
       background: radial-gradient(circle at top, #1a1735, #090816 100%);
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-x: hidden;
+      color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
     }
 
-    /* Шапка як в index.html */
     .header { width: 100%; display: flex; justify-content: flex-end; padding: 12px; box-sizing: border-box; position: relative; }
     .header-box {
       display: flex; align-items: center; gap: 10px;
@@ -29,15 +22,12 @@
     .avatar { width: 36px; height: 36px; border-radius: 50%; background: #333; }
     .profile { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 
-    /* Меню */
     .menu {
       position: absolute; top: 70px; right: 12px; background: rgba(15, 12, 33, 0.98);
-      padding: 12px; border-radius: 12px; width: 180px; display: none; z-index: 2000;
-      border: 1px solid rgba(255,255,255,0.1);
+      padding: 12px; border-radius: 12px; width: 180px; display: none; z-index: 2000; border: 1px solid rgba(255,255,255,0.1);
     }
     .menu button { width: 100%; margin-top: 8px; padding: 12px; border: none; border-radius: 8px; font-weight: bold; background: white; color: black; cursor: pointer; }
 
-    /* Апгрейд інтерфейс */
     .upgrade-center { position: relative; width: 220px; height: 220px; margin: 15px 0; }
     canvas { width: 100%; height: 100%; transform: rotate(-90deg); }
     .chance-info { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
@@ -65,15 +55,15 @@
 <div class="header">
   <div class="header-box">
     <div style="font-weight:bold; font-size: 16px;"><span id="balance" style="color:#f1c40f;">0</span> ⭐</div>
-    <button class="header-btn" onclick="alert('Soon')">+</button>
-    <button class="header-btn" onclick="alert('Promo Soon')">🎟</button>
+    <button class="header-btn" onclick="alert('Deposit feature coming soon!')">+</button>
+    <button class="header-btn" onclick="alert('Promo code feature coming soon!')">🎟</button>
     <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar">
       <div id="name">User</div>
     </div>
   </div>
   <div class="menu" id="menu">
-    <button onclick="window.location.href='index.html'">🏠 Головна</button>
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
     <button onclick="window.location.href='inventory.html'">🎒 Inventory</button>
   </div>
 </div>
@@ -84,7 +74,7 @@
 </div>
 
 <div class="slots">
-  <div class="slot" id="inSlot">Select In</div>
+  <div class="slot" id="inSlot">Select Item</div>
   <div class="slot" id="outSlot">Select Target</div>
 </div>
 
@@ -127,7 +117,7 @@
   function render() {
     document.getElementById("balance").innerText = localStorage.getItem("stars") || "0";
     const uInv = document.getElementById("userInv");
-    uInv.innerHTML = items.length ? "" : "<div style='padding:20px; opacity:0.5;'>Empty</div>";
+    uInv.innerHTML = items.length ? "" : "<div style='padding:20px; opacity:0.5;'>Inventory is empty</div>";
     items.forEach((item, i) => {
       uInv.innerHTML += `<div class="skin-card" onclick="selectIn(${i})" id="u-${i}"><img src="${item.img}"><div>${item.price}⭐</div></div>`;
     });
@@ -192,10 +182,10 @@
       else {
         isSpinning = false;
         if((rot % (Math.PI*2)) <= (c * Math.PI*2)) {
-          alert("🎉 Success! Ви отримали " + selOut.name);
+          alert("🎉 Success! You got " + selOut.name);
           items.splice(selIn.index, 1); items.push(selOut);
         } else {
-          alert("💀 Failed! Скін було втрачено.");
+          alert("💀 Failed! The item was lost.");
           items.splice(selIn.index, 1);
         }
         localStorage.setItem("items", JSON.stringify(items)); location.reload();
@@ -205,11 +195,8 @@
   }
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".profile") && !e.target.closest(".menu")) {
-      document.getElementById("menu").style.display = "none";
-    }
+    if (!e.target.closest(".profile") && !e.target.closest(".menu")) document.getElementById("menu").style.display = "none";
   });
-
   init();
 </script>
 </body>

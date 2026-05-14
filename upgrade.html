@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <title>Upgrade - Grader_cs2</title>
-
   <style>
     body {
       margin: 0; font-family: 'Segoe UI', sans-serif;
@@ -122,10 +121,7 @@
     { name: "USP-S | Kill Confirmed", price: 100, img: "usp_kill.png" },
     { name: "AK-47 | Safari Mesh", price: 10, img: "ak_safari.png" },
     { name: "AK-47 | Redline", price: 200, img: "ak_redline.png" },
-    { name: "AK-47 | Safety Net ", price: 40, img: "ak_safety.png" },
-
-
-    
+    { name: "AK-47 | Safety Net", price: 40, img: "ak_safety.png" }
   ];
 
   function toggleMenu() {
@@ -228,32 +224,30 @@
 
     const chance = Math.min(selIn.price / selOut.price, 0.95);
     const win = Math.random() < chance;
-    
     const chanceDeg = chance * 360;
-    const spins = 7 + Math.random() * 2;
+    const halfChance = chanceDeg / 2;
+    const spins = 6 + Math.floor(Math.random() * 3);
     
-    let targetDeg;
+    let finalAngle;
     if(win) {
-      // Pick a random point anywhere within the orange arc
-      const randomInArc = (Math.random() * chanceDeg) - (chanceDeg / 2);
-      targetDeg = 90 + randomInArc;
+      finalAngle = 90 + (Math.random() * (chanceDeg * 0.9) - (halfChance * 0.9));
     } else {
-      // Pick a random point in the dark area
-      const darkAreaSize = 360 - chanceDeg;
-      const randomInDark = (chanceDeg / 2) + (Math.random() * darkAreaSize);
-      targetDeg = 90 + randomInDark;
+      const gap = 10;
+      const failRange = 360 - chanceDeg - (gap * 2);
+      finalAngle = 90 + halfChance + gap + (Math.random() * failRange);
     }
 
     const startDeg = 90;
-    const totalDist = (spins * 360) + (targetDeg - startDeg);
+    const totalDist = (spins * 360) + (finalAngle - startDeg);
     let startTime = null;
 
     function animate(t) {
       if(!startTime) startTime = t;
-      let prog = Math.min((t - startTime) / 4500, 1);
+      let prog = Math.min((t - startTime) / 4800, 1);
       let ease = 1 - Math.pow(1 - prog, 4);
+      let currentPos = startDeg + (totalDist * ease);
       
-      draw(chance, startDeg + (totalDist * ease));
+      draw(chance, currentPos % 360);
 
       if(prog < 1) requestAnimationFrame(animate);
       else {
@@ -267,7 +261,7 @@
           items.splice(selIn.index, 1);
           localStorage.setItem("items", JSON.stringify(items));
           location.reload();
-        }, 400);
+        }, 500);
       }
     }
     requestAnimationFrame(animate);

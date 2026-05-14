@@ -120,13 +120,22 @@
   let items = JSON.parse(localStorage.getItem("items") || "[]");
   let selIn = null, selOut = null, spinning = false;
 
-  const targets = [
-    { name: "Glock-18 | Water Elemental", price: 40, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3fDJ954jjg87IxvX3P77em29U-8xeh-zF_Jn4xgXirhVqY2_1ctfDIQ9vYV6B_FntxL_rhp_vup7AnXNq73R37S3Umwv3309_9XG7XQ" },
-    { name: "USP-S | Neo-Noir", price: 100, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8j_OrfdqWhe5sN4mOTE8bP4jVC9vh5yYG7wI47HIAU4YF3S81e5xb_rh5S0vszInScy73Yh4S6JnECpwUYb-p8pEw" },
-    { name: "AK-47 | Asiimov", price: 300, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrY6i2VHt-0s9ODuicY_AcVNoMF_R_AK9kO_n08S6vJvAnXcx6Sclt3_D30vgbe_72j0" },
-    { name: "AWP | Hyper Beast", price: 600, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17PLfYQJD_9W7m5a0mvLwOq7c2G1QvJByiL_E99Sk3ALsr0ZpZz_6I4-ccVVsMFvX-1O3w7y605S1vczAn3E2v3Em4XfD30vgTMo_H2E" },
-    { name: "M4A4 | Howl", price: 2000, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09Kzm7-FmP7mDLfYkWNF18lwmO7Eu46j3VHt_0VvMT31LY-QdFVqYV7Y_gS-xeu605S-7s7NynRi6XIn4S2OnBapwUYbR_m_7RE" }
-  ];
+ 
+const targets = [
+
+  { name: "Glock-18 | Sacrifice", price: 5, img: "glock18_sacrifice.png" },
+  { name: "USP-S | Lead Conduit", price: 5, img: "usp_lead.png" },
+ 
+  { name: "Glock-18 | Franklin", price: 15, img: "glock18_franklin.png" },
+  { name: "USP-S | Ticket to Hell", price: 15, img: "usp_ticket.png" },
+
+  { name: "Glock-18 | Water Elemental", price: 40, img: "glock18_water_elemental.png" },
+  { name: "USP-S | Cortex", price: 40, img: "usp_cortex.png" },
+  
+  { name: "Glock-18 | Neo-Noir", price: 100, img: "glock18_neo.png" },
+  { name: "USP-S | Kill Confirmed", price: 100, img: "usp_kill.png" }
+];
+
 
   function toggleMenu() {
     const m = document.getElementById("menu");

@@ -120,22 +120,16 @@
   let items = JSON.parse(localStorage.getItem("items") || "[]");
   let selIn = null, selOut = null, spinning = false;
 
- 
-const targets = [
-
-  { name: "Glock-18 | Sacrifice", price: 5, img: "glock18_sacrifice.png" },
-  { name: "USP-S | Lead Conduit", price: 5, img: "usp_lead.png" },
- 
-  { name: "Glock-18 | Franklin", price: 15, img: "glock18_franklin.png" },
-  { name: "USP-S | Ticket to Hell", price: 15, img: "usp_ticket.png" },
-
-  { name: "Glock-18 | Water Elemental", price: 40, img: "glock18_water_elemental.png" },
-  { name: "USP-S | Cortex", price: 40, img: "usp_cortex.png" },
-  
-  { name: "Glock-18 | Neo-Noir", price: 100, img: "glock18_neo.png" },
-  { name: "USP-S | Kill Confirmed", price: 100, img: "usp_kill.png" }
-];
-
+  const targets = [
+    { name: "Glock-18 | Sacrifice", price: 5, img: "glock18_sacrifice.png" },
+    { name: "USP-S | Lead Conduit", price: 5, img: "usp_lead.png" },
+    { name: "Glock-18 | Franklin", price: 15, img: "glock18_franklin.png" },
+    { name: "USP-S | Ticket to Hell", price: 15, img: "usp_ticket.png" },
+    { name: "Glock-18 | Water Elemental", price: 40, img: "glock18_water_elemental.png" },
+    { name: "USP-S | Cortex", price: 40, img: "usp_cortex.png" },
+    { name: "Glock-18 | Neo-Noir", price: 100, img: "glock18_neo.png" },
+    { name: "USP-S | Kill Confirmed", price: 100, img: "usp_kill.png" }
+  ];
 
   function toggleMenu() {
     const m = document.getElementById("menu");
@@ -163,10 +157,12 @@ const targets = [
     ctx.clearRect(0,0,500,500);
     const cx = 250, cy = 250, r = 210;
 
+    // Фон (чорний сектор)
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.strokeStyle = "#16122d"; ctx.lineWidth = 25; ctx.stroke();
 
+    // Оранжевий сектор (Успіх) - Завжди внизу
     if (chance > 0) {
       const arcSize = Math.PI * 2 * chance;
       ctx.beginPath();
@@ -177,6 +173,7 @@ const targets = [
       ctx.shadowBlur = 0;
     }
 
+    // Стрілка
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(arrowAngle);
@@ -237,32 +234,43 @@ const targets = [
 
     const chance = Math.min(selIn.price / selOut.price, 0.95);
     const win = Math.random() < chance;
-    const spins = 8 + Math.random() * 2;
+    
+    // Кількість повних обертів
+    const spins = 7 + Math.random() * 2;
     const arcSize = Math.PI * 2 * chance;
     
+    // Розрахунок цільового кута
     let targetAngle;
     if(win) {
+      // Вибираємо випадкову точку ВСЕРЕДИНІ оранжевого сектору (центр сектору на 90 градусах)
       targetAngle = (Math.PI / 2) + (Math.random() * arcSize - (arcSize / 2));
     } else {
+      // Вибираємо випадкову точку ЗА МЕЖАМИ оранжевого сектору
       targetAngle = (Math.PI / 2) + (arcSize / 2) + Math.random() * (Math.PI * 2 - arcSize);
     }
 
     const finalAngle = (Math.PI * 2 * spins) + targetAngle;
-    let start = null;
+    let startTime = null;
 
     function animate(t) {
-      if(!start) start = t;
-      let prog = (t - start) / 5000;
+      if(!startTime) startTime = t;
+      let prog = (t - startTime) / 4500; // Час анімації 4.5 сек
       if(prog > 1) prog = 1;
+
+      // Плавне гальмування
       let ease = 1 - Math.pow(1 - prog, 4);
       draw(chance, finalAngle * ease);
-      if(prog < 1) requestAnimationFrame(animate);
-      else {
+
+      if(prog < 1) {
+        requestAnimationFrame(animate);
+      } else {
         setTimeout(() => {
           if(win) {
-            alert("SUCCESS! " + selOut.name);
-            items.push(selOut);
-          } else alert("FAILED!");
+            alert("SUCCESS! Ви отримали: " + selOut.name);
+            items.push({...selOut});
+          } else {
+            alert("FAILED! Предмет втрачено.");
+          }
           items.splice(selIn.index, 1);
           localStorage.setItem("items", JSON.stringify(items));
           location.reload();

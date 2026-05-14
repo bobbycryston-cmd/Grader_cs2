@@ -142,32 +142,29 @@
     update();
   }
 
-  function draw(chance, arrowDeg = 90) {
+  function draw(chance, currentDeg) {
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0,0,500,500);
     const cx = 250, cy = 250, r = 210;
 
-    // Background circle
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.strokeStyle = "#16122d"; ctx.lineWidth = 30; ctx.stroke();
 
-    // Orange sector (fixed at the bottom)
     if (chance > 0) {
-      const arcSize = Math.PI * 2 * chance;
+      const arcRad = Math.PI * 2 * chance;
       ctx.beginPath();
-      ctx.arc(cx, cy, r, (Math.PI/2) - (arcSize/2), (Math.PI/2) + (arcSize/2));
+      ctx.arc(cx, cy, r, (Math.PI/2) - (arcRad/2), (Math.PI/2) + (arcRad/2));
       ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 30;
       ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
 
-    // Moving Arrow
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(arrowDeg * Math.PI / 180);
+    ctx.rotate(currentDeg * Math.PI / 180);
     ctx.beginPath();
     ctx.moveTo(r - 35, -15);
     ctx.lineTo(r + 20, 0);
@@ -227,29 +224,30 @@
     const win = Math.random() < chance;
     
     const chanceDeg = chance * 360;
-    const spins = 6 + Math.random() * 3;
+    const spins = 7 + Math.random() * 2;
     
     let targetDeg;
     if(win) {
-      // Target orange: between (90 - half) and (90 + half)
-      targetDeg = 90 + (Math.random() * chanceDeg - (chanceDeg / 2));
+      // Pick a random point anywhere within the orange arc
+      const randomInArc = (Math.random() * chanceDeg) - (chanceDeg / 2);
+      targetDeg = 90 + randomInArc;
     } else {
-      // Target dark: anywhere else
-      targetDeg = 90 + (chanceDeg / 2) + Math.random() * (360 - chanceDeg);
+      // Pick a random point in the dark area
+      const darkAreaSize = 360 - chanceDeg;
+      const randomInDark = (chanceDeg / 2) + (Math.random() * darkAreaSize);
+      targetDeg = 90 + randomInDark;
     }
 
-    const finalDeg = (360 * spins) + targetDeg;
+    const startDeg = 90;
+    const totalDist = (spins * 360) + (targetDeg - startDeg);
     let startTime = null;
 
     function animate(t) {
       if(!startTime) startTime = t;
-      let prog = (t - startTime) / 4500;
-      if(prog > 1) prog = 1;
-
+      let prog = Math.min((t - startTime) / 4500, 1);
       let ease = 1 - Math.pow(1 - prog, 4);
-      let currentDeg = finalDeg * ease;
       
-      draw(chance, currentDeg);
+      draw(chance, startDeg + (totalDist * ease));
 
       if(prog < 1) requestAnimationFrame(animate);
       else {
@@ -263,7 +261,7 @@
           items.splice(selIn.index, 1);
           localStorage.setItem("items", JSON.stringify(items));
           location.reload();
-        }, 500);
+        }, 400);
       }
     }
     requestAnimationFrame(animate);

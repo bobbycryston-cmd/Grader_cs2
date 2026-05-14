@@ -2,87 +2,98 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <title>Upgrade - Grader_cs2</title>
   <style>
     body {
-      margin: 0; font-family: 'Segoe UI', sans-serif;
+      margin: 0; font-family: 'Segoe UI', Roboto, sans-serif;
       background: #0f0c21; color: white; min-height: 100vh;
       display: flex; flex-direction: column; align-items: center;
+      overflow-x: hidden;
     }
-    .header { width: 100%; display: flex; justify-content: flex-end; padding: 12px; box-sizing: border-box; }
-    .header-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 14px; position: relative; }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #333; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
-    .menu {
-      position: absolute; top: 60px; right: 0; background: #1a1631;
-      padding: 10px; border-radius: 12px; width: 150px; display: none; z-index: 1000;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+    .header { width: 100%; display: flex; justify-content: flex-end; padding: 10px; box-sizing: border-box; }
+    .header-box { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); padding: 6px 12px; border-radius: 12px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; border: 1px solid rgba(255,255,255,0.2); }
+    
+    .upgrade-container { width: 100%; max-width: 500px; padding: 10px; box-sizing: border-box; }
+    
+    .main-ui { 
+      display: flex; flex-direction: row; justify-content: center; align-items: center; 
+      gap: 10px; margin-top: 10px; flex-wrap: wrap; 
     }
-    .menu button { width: 100%; margin-top: 5px; padding: 10px; border: none; border-radius: 8px; cursor: pointer; color: black; background: white; font-weight: bold; }
-    .upgrade-container { width: 100%; max-width: 800px; padding: 15px; box-sizing: border-box; }
-    .main-ui { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 15px; margin-top: 10px; }
+    
     .side-panel {
-      flex: 1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 15px; height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 10px; position: relative;
+      flex: 1; min-width: 100px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; height: 140px; display: flex; flex-direction: column; 
+      align-items: center; justify-content: center; text-align: center; padding: 5px; position: relative;
     }
-    .side-panel img { width: 100px; height: 70px; object-fit: contain; margin-bottom: 10px; }
-    .reset-btn {
-      position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.1);
-      border: none; color: white; border-radius: 50%; width: 24px; height: 24px;
-      cursor: pointer; font-size: 16px; display: none; z-index: 10;
-    }
-    .wheel-box { position: relative; width: 240px; height: 240px; flex-shrink: 0; }
+    .side-panel img { width: 80%; max-height: 60px; object-fit: contain; }
+    .side-panel div { font-size: 11px; margin-top: 5px; line-height: 1.2; }
+
+    .wheel-box { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
     #wheelCanvas { width: 100%; height: 100%; }
     .chance-display {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-size: 28px; font-weight: bold; color: white;
+      font-size: 22px; font-weight: bold; color: white;
     }
-    .controls-row { display: flex; gap: 6px; margin: 20px 0; width: 100%; justify-content: center; flex-wrap: wrap; }
+
+    .controls-row { 
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; 
+      margin: 15px 0; width: 100%; 
+    }
     .btn-quick {
       background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
-      color: white; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold;
+      color: white; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold;
     }
+
     .btn-main-upgrade {
-      width: 100%; max-width: 400px; padding: 18px; background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
-      border: none; border-radius: 12px; color: black; font-weight: 900; font-size: 20px; cursor: pointer;
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
+      border: none; border-radius: 12px; color: black; font-weight: 900; font-size: 18px; cursor: pointer;
     }
     .btn-main-upgrade:disabled { opacity: 0.2; }
-    .inventory-section { width: 100%; margin-top: 20px; }
-    .skin-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; min-height: 100px; }
+
+    .inventory-section { width: 100%; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .skin-scroll { 
+      display: flex; overflow-x: auto; gap: 10px; padding: 15px 5px; 
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
     .skin-item {
-      min-width: 100px; background: rgba(255,255,255,0.03); padding: 10px;
-      border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+      min-width: 90px; background: rgba(255,255,255,0.03); padding: 8px;
+      border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1);
     }
     .skin-item.selected { border-color: #ff9f43; background: rgba(255,159,67,0.1); }
-    .skin-item img { width: 70px; height: 50px; object-fit: contain; }
+    .skin-item img { width: 60px; height: 40px; object-fit: contain; }
+    
+    .reset-btn {
+      position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.15);
+      border: none; color: white; border-radius: 50%; width: 20px; height: 20px;
+      font-size: 14px; display: none; z-index: 10;
+    }
   </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-box">
-    <div style="font-weight:bold;"><span id="balance" style="color:#f1c40f;">0</span> ⭐</div>
-    <img id="avatar" class="avatar" onclick="toggleMenu()">
-    <div class="menu" id="menu">
-      <button onclick="location.href='index.html'">🏠 Home</button>
-      <button onclick="location.href='inventory.html'">🎒 Inventory</button>
-    </div>
+    <div style="font-size: 14px; font-weight:bold;"><span id="balance">0</span> ⭐</div>
+    <img id="avatar" class="avatar">
   </div>
 </div>
 
 <div class="upgrade-container">
   <div class="main-ui">
-    <div class="side-panel">
+    <div class="side-panel" id="panelIn">
       <button class="reset-btn" id="resetIn" onclick="resetSelection('in')">×</button>
       <div id="inContent">Select Skin</div>
     </div>
+    
     <div class="wheel-box">
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
       <div class="chance-display" id="chanceText">0%</div>
     </div>
-    <div class="side-panel">
+    
+    <div class="side-panel" id="panelOut">
       <button class="reset-btn" id="resetOut" onclick="resetSelection('out')">×</button>
       <div id="outContent">Target Skin</div>
     </div>
@@ -97,9 +108,7 @@
     <button class="btn-quick" onclick="autoPickChance(0.75)">75%</button>
   </div>
 
-  <div style="display:flex; justify-content:center;">
-    <button class="btn-main-upgrade" id="uBtn" disabled onclick="startUpgrade()">Upgrade</button>
-  </div>
+  <button class="btn-main-upgrade" id="uBtn" disabled onclick="startUpgrade()">UPGRADE</button>
 
   <div class="inventory-section">
     <div class="skin-scroll" id="userInv"></div>
@@ -124,9 +133,32 @@
     { name: "AK-47 | Safety Net", price: 55, img: "ak_safety.png" }
   ];
 
-  function toggleMenu() {
-    const m = document.getElementById("menu");
-    m.style.display = m.style.display === "block" ? "none" : "block";
+  function draw(chance, currentDeg) {
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,500,500);
+    const cx = 250, cy = 250, r = 210;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 40; ctx.stroke();
+    if (chance > 0) {
+      const arcRad = Math.PI * 2 * chance;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, (Math.PI/2)-(arcRad/2), (Math.PI/2)+(arcRad/2));
+      ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 40;
+      ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(currentDeg * Math.PI / 180);
+    ctx.beginPath();
+    ctx.moveTo(r - 45, -20);
+    ctx.lineTo(r + 25, 0);
+    ctx.lineTo(r - 45, 20);
+    ctx.fillStyle = "white"; ctx.fill();
+    ctx.restore();
   }
 
   function resetSelection(type) {
@@ -144,65 +176,25 @@
     update();
   }
 
-  function draw(chance, currentDeg) {
-    const canvas = document.getElementById("wheelCanvas");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0,0,500,500);
-    const cx = 250, cy = 250, r = 210;
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 30; ctx.stroke();
-
-    if (chance > 0) {
-      const arcRad = Math.PI * 2 * chance;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, (Math.PI/2) - (arcRad/2), (Math.PI/2) + (arcRad/2));
-      ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 30;
-      ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-    }
-
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(currentDeg * Math.PI / 180);
-    ctx.beginPath();
-    ctx.moveTo(r - 35, -15);
-    ctx.lineTo(r + 20, 0);
-    ctx.lineTo(r - 35, 15);
-    ctx.fillStyle = "white"; ctx.fill();
-    ctx.restore();
-  }
-
-  function autoPick(mult) {
-    if(!selIn || spinning) return;
-    pickClosest(selIn.price * mult);
-  }
-
-  function autoPickChance(c) {
-    if(!selIn || spinning) return;
-    pickClosest(selIn.price / c);
-  }
-
-  function pickClosest(goal) {
-    selOut = targets.reduce((prev, curr) => 
-      Math.abs(curr.price - goal) < Math.abs(prev.price - goal) ? curr : prev
-    );
-    document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
-    document.getElementById("resetOut").style.display = "block";
-    update();
-  }
-
   function selectIn(i) {
     if(spinning) return;
     selIn = {...items[i], index: i};
     document.querySelectorAll(".skin-item").forEach(el => el.classList.remove("selected"));
     document.getElementById(`inv-${i}`).classList.add("selected");
-    document.getElementById("inContent").innerHTML = `<img src="${selIn.img}"><div>${selIn.name}<br><span style="color:#f1c40f">${selIn.price} ⭐</span></div>`;
+    document.getElementById("inContent").innerHTML = `<img src="${selIn.img}"><div>${selIn.price} ⭐</div>`;
     document.getElementById("resetIn").style.display = "block";
     update();
   }
+
+  function pickClosest(goal) {
+    selOut = targets.reduce((prev, curr) => Math.abs(curr.price - goal) < Math.abs(prev.price - goal) ? curr : prev);
+    document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.price} ⭐</div>`;
+    document.getElementById("resetOut").style.display = "block";
+    update();
+  }
+
+  function autoPick(mult) { if(selIn && !spinning) pickClosest(selIn.price * mult); }
+  function autoPickChance(c) { if(selIn && !spinning) pickClosest(selIn.price / c); }
 
   function update() {
     if(selIn && selOut) {
@@ -218,53 +210,37 @@
   }
 
   function startUpgrade() {
-    if(spinning) return;
+    if(spinning || !selIn || !selOut) return;
     spinning = true;
     document.getElementById("uBtn").disabled = true;
-
     const chance = Math.min(selIn.price / selOut.price, 0.95);
     const win = Math.random() < chance;
     const chanceDeg = chance * 360;
     const halfChance = chanceDeg / 2;
-    const spins = 6 + Math.floor(Math.random() * 3);
-    
+    const spins = 7 + Math.floor(Math.random() * 2);
     let finalAngle;
-    if(win) {
-      finalAngle = 90 + (Math.random() * (chanceDeg * 0.9) - (halfChance * 0.9));
-    } else {
-      const gap = 10;
-      const failRange = 360 - chanceDeg - (gap * 2);
-      finalAngle = 90 + halfChance + gap + (Math.random() * failRange);
-    }
-
-    const startDeg = 90;
-    const totalDist = (spins * 360) + (finalAngle - startDeg);
-    let startTime = null;
-
-    function animate(t) {
-      if(!startTime) startTime = t;
-      let prog = Math.min((t - startTime) / 4800, 1);
+    if(win) finalAngle = 90 + (Math.random() * (chanceDeg * 0.8) - (halfChance * 0.8));
+    else finalAngle = 90 + halfChance + 20 + (Math.random() * (320 - chanceDeg));
+    
+    let startT = null;
+    const duration = 4500;
+    function anim(t) {
+      if(!startT) startT = t;
+      let prog = Math.min((t - startT) / duration, 1);
       let ease = 1 - Math.pow(1 - prog, 4);
-      let currentPos = startDeg + (totalDist * ease);
-      
-      draw(chance, currentPos % 360);
-
-      if(prog < 1) requestAnimationFrame(animate);
+      draw(chance, (90 + (spins * 360 + (finalAngle - 90)) * ease) % 360);
+      if(prog < 1) requestAnimationFrame(anim);
       else {
         setTimeout(() => {
-          if(win) {
-            alert("SUCCESS! You got: " + selOut.name);
-            items.push({...selOut});
-          } else {
-            alert("FAILED! Item lost.");
-          }
+          alert(win ? "SUCCESS! " + selOut.name : "FAILED!");
+          if(win) items.push({...selOut});
           items.splice(selIn.index, 1);
           localStorage.setItem("items", JSON.stringify(items));
           location.reload();
         }, 500);
       }
     }
-    requestAnimationFrame(animate);
+    requestAnimationFrame(anim);
   }
 
   function init() {
@@ -277,7 +253,7 @@
         <img src="${item.img}">
         <div style="font-size:10px; margin-top:5px;">${item.price} ⭐</div>
       </div>
-    `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Inventory Empty</div>";
+    `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Empty</div>";
     draw(0, 90);
   }
   init();

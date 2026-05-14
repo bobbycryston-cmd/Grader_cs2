@@ -16,142 +16,45 @@
       overflow-x: hidden;
     }
 
-    
-    .header {
-      display: flex;
-      justify-content: flex-end;
-      padding: 12px;
-      position: relative;
-    }
-
+    .header { display: flex; justify-content: flex-end; padding: 12px; position: relative; }
     .header-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,0.08);
-      padding: 8px 12px;
-      border-radius: 14px;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 14px;
     }
-
-    .balance-box {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: bold;
-      font-size: 16px;
-    }
+    .balance-box { display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 16px; }
     .balance-box span { color: #f1c40f; }
-
-    .header-btn {
-      background: #ff9f43;
-      border: none;
-      color: black;
-      font-size: 18px;
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #333;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    /* Меню */
-    .menu {
-      position: absolute;
-      top: 70px;
-      right: 12px;
-      background: rgba(15, 12, 33, 0.98);
-      padding: 12px;
-      border-radius: 12px;
-      width: 180px;
-      display: none;
-      z-index: 2000;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .menu button {
-      width: 100%;
-      margin-top: 8px;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      color: black;
-      background: #fff;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-
-    /* Стилі інвентарю */
-    .inv-title { text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0 10px; }
     
-    .nav-controls {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 20px;
+    .header-btn {
+      background: #ff9f43; border: none; color: black; font-size: 18px;
+      width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-weight: bold;
     }
 
-    .btn-control {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
+    .profile { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #333; border: 1px solid rgba(255,255,255,0.2); }
+
+    .menu {
+      position: absolute; top: 70px; right: 12px; background: rgba(15, 12, 33, 0.98);
+      padding: 12px; border-radius: 12px; width: 180px; display: none; z-index: 2000;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
     }
+    .menu button {
+      width: 100%; margin-top: 8px; padding: 12px; border: none;
+      border-radius: 8px; cursor: pointer; color: black; background: #fff; font-weight: bold;
+    }
+
+    .inv-title { text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0 10px; }
+    .nav-controls { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; }
+    .btn-control { padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
     .btn-sell-all { background: #ff9f43; color: black; }
     .btn-back { background: rgba(255,255,255,0.1); color: white; }
 
-    #list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding: 0 15px 15px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .item {
-      background: rgba(255,255,255,0.03);
-      border-radius: 15px;
-      padding: 10px;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
+    #list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px 15px; max-width: 500px; margin: 0 auto; }
+    .item { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
     .item img { width: 100%; height: 60px; object-fit: contain; margin-bottom: 8px; }
     .item-name { font-size: 10px; font-weight: bold; height: 24px; overflow: hidden; margin-bottom: 5px; }
     .item-price { color: #f1c40f; font-size: 11px; margin-bottom: 8px; }
-    
-    .btn-item-sell {
-      width: 100%;
-      padding: 7px;
-      background: #ff4757;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .btn-item-sell { width: 100%; padding: 7px; background: #ff4757; color: white; border: none; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -159,16 +62,15 @@
 <div class="header">
   <div class="header-box">
     <div class="balance-box"><span id="balance">0</span> ⭐</div>
-    <button class="header-btn" onclick="alert('Soon')">+</button>
-    <button class="header-btn" onclick="alert('Promo Soon')">🎟</button>
+    <button class="header-btn" onclick="alert('Deposit feature coming soon!')">+</button>
+    <button class="header-btn" onclick="alert('Promo code feature coming soon!')">🎟</button>
     <div class="profile" onclick="toggleMenu()">
       <img id="avatar" class="avatar">
       <div id="name">User</div>
     </div>
   </div>
-
   <div class="menu" id="menu">
-    <button onclick="window.location.href='index.html'">🏠 Головна</button>
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
     <button onclick="window.location.href='upgrade.html'">⚡ Upgrade</button>
   </div>
 </div>
@@ -183,7 +85,6 @@
 
 <script>
   const tg = window.Telegram.WebApp;
-  
   function toggleMenu() {
     const m = document.getElementById("menu");
     m.style.display = m.style.display === "block" ? "none" : "block";
@@ -199,20 +100,12 @@
     let items = JSON.parse(localStorage.getItem("items") || "[]");
     document.getElementById("balance").innerText = localStorage.getItem("stars") || "0";
     let html = "";
-
     if (items.length === 0) {
-      document.getElementById("list").innerHTML = "<div style='grid-column:1/-1; opacity:0.5; margin-top:50px; text-align:center;'>Тут поки що порожньо...</div>";
+      document.getElementById("list").innerHTML = "<div style='grid-column:1/-1; opacity:0.5; margin-top:50px; text-align:center;'>Your inventory is empty...</div>";
       return;
     }
-
     items.forEach((item, i) => {
-      html += `
-        <div class="item">
-          <img src="${item.img || ''}">
-          <div class="item-name">${item.name}</div>
-          <div class="item-price">${item.price || 5} ⭐</div>
-          <button class="btn-item-sell" onclick="sell(${i})">Sell</button>
-        </div>`;
+      html += `<div class="item"><img src="${item.img || ''}"><div class="item-name">${item.name}</div><div class="item-price">${item.price || 5} ⭐</div><button class="btn-item-sell" onclick="sell(${i})">Sell</button></div>`;
     });
     document.getElementById("list").innerHTML = html;
   }
@@ -236,11 +129,8 @@
   }
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".profile") && !e.target.closest(".menu")) {
-      document.getElementById("menu").style.display = "none";
-    }
+    if (!e.target.closest(".profile") && !e.target.closest(".menu")) document.getElementById("menu").style.display = "none";
   });
-
   loadItems();
 </script>
 </body>

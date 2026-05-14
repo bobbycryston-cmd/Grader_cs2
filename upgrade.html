@@ -30,9 +30,14 @@
     .side-panel {
       flex: 1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
       border-radius: 15px; height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 10px;
+      text-align: center; padding: 10px; position: relative;
     }
-    .side-panel img { width: 100px; height: 70px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
+    .side-panel img { width: 100px; height: 70px; object-fit: contain; margin-bottom: 10px; }
+    .reset-btn {
+      position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.1);
+      border: none; color: white; border-radius: 50%; width: 22px; height: 22px;
+      cursor: pointer; font-size: 14px; line-height: 1; display: none;
+    }
 
     .wheel-box { position: relative; width: 240px; height: 240px; flex-shrink: 0; }
     #wheelCanvas { width: 100%; height: 100%; }
@@ -54,7 +59,7 @@
     .btn-main-upgrade:disabled { opacity: 0.2; }
 
     .inventory-section { width: 100%; margin-top: 20px; }
-    .skin-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; }
+    .skin-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; min-height: 80px; }
     .skin-item {
       min-width: 100px; background: rgba(255,255,255,0.03); padding: 10px;
       border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
@@ -78,12 +83,18 @@
 
 <div class="upgrade-container">
   <div class="main-ui">
-    <div class="side-panel" id="inPanel"><div>Select Skin</div></div>
+    <div class="side-panel" id="inPanel">
+      <button class="reset-btn" id="resetIn" onclick="resetSelection('in')">×</button>
+      <div id="inContent">Select Skin</div>
+    </div>
     <div class="wheel-box">
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
       <div class="chance-display" id="chanceText">0%</div>
     </div>
-    <div class="side-panel" id="outPanel"><div>Target Skin</div></div>
+    <div class="side-panel" id="outPanel">
+      <button class="reset-btn" id="resetOut" onclick="resetSelection('out')">×</button>
+      <div id="outContent">Target Skin</div>
+    </div>
   </div>
 
   <div class="controls-row">
@@ -109,6 +120,9 @@
   let selIn = null, selOut = null, spinning = false;
 
   const targets = [
+    { name: "P250 | Sand Dune", price: 2, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpopujbEgdi1vX3fDJ9-966mYyZnvb6Nb7VqWZU7Mxkh9bN9J7yjRrhrUo6Z2mgLIPDclA3YF6C-gS5k-u81MW7uJzAnHFguygh7H3UnAv3309pAnY46g" },
+    { name: "AK-47 | Safari Mesh", price: 5, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV092lnYmGmOH8Nrrul39I-8Njie398I701wa3rUdsYj_1I46XIFBoYF2D_lXsxLrr1JS47p_KzXU173Irt2GdwUI8-Y6pXw" },
+    { name: "M4A1-S | Boreal Forest", price: 10, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhz2v_Nfz5H_uO1mY-0m_7zO6-fzj9V7cJ0n_rE89SmiQPmqhY-NWCid9XAcVNoNFmD_AW6k-vn18S76cyYyHZh7yIn7GeOnhS-n1gSOWE9lS6a" },
     { name: "Glock-18 | Water Elemental", price: 40, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3fDJ954jjg87IxvX3P77em29U-8xeh-zF_Jn4xgXirhVqY2_1ctfDIQ9vYV6B_FntxL_rhp_vup7AnXNq73R37S3Umwv3309_9XG7XQ" },
     { name: "USP-S | Neo-Noir", price: 100, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8j_OrfdqWhe5sN4mOTE8bP4jVC9vh5yYG7wI47HIAU4YF3S81e5xb_rh5S0vszInScy73Yh4S6JnECpwUYb-p8pEw" },
     { name: "AK-47 | Asiimov", price: 300, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEpiLuSrY6i2VHt-0s9ODuicY_AcVNoMF_R_AK9kO_n08S6vJvAnXcx6Sclt3_D30vgbe_72j0" },
@@ -121,21 +135,37 @@
     m.style.display = m.style.display === "block" ? "none" : "block";
   }
 
+  function resetSelection(type) {
+    if(spinning) return;
+    if(type === 'in') {
+      selIn = null;
+      document.getElementById("inContent").innerHTML = "Select Skin";
+      document.getElementById("resetIn").style.display = "none";
+      document.querySelectorAll(".skin-item").forEach(el => el.classList.remove("selected"));
+    } else {
+      selOut = null;
+      document.getElementById("outContent").innerHTML = "Target Skin";
+      document.getElementById("resetOut").style.display = "none";
+    }
+    update();
+  }
+
   function draw(chance, arrowAngle = Math.PI/2) {
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0,0,500,500);
-    const cx = 250, cy = 250, r = 220;
+    const cx = 250, cy = 250, r = 210;
 
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 20; ctx.stroke();
+    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 25; ctx.stroke();
 
     if (chance > 0) {
       const halfArc = (Math.PI * 2 * chance) / 2;
       ctx.beginPath();
       ctx.arc(cx, cy, r, (Math.PI/2) - halfArc, (Math.PI/2) + halfArc);
       ctx.strokeStyle = "#ff9f43";
+      ctx.lineWidth = 25;
       ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
       ctx.stroke();
       ctx.shadowBlur = 0;
@@ -145,9 +175,9 @@
     ctx.translate(cx, cy);
     ctx.rotate(arrowAngle);
     ctx.beginPath();
-    ctx.moveTo(r - 35, -10);
+    ctx.moveTo(r - 35, -12);
     ctx.lineTo(r + 15, 0);
-    ctx.lineTo(r - 35, 10);
+    ctx.lineTo(r - 35, 12);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.restore();
@@ -167,7 +197,8 @@
     selOut = targets.reduce((prev, curr) => 
       Math.abs(curr.price - goal) < Math.abs(prev.price - goal) ? curr : prev
     );
-    document.getElementById("outPanel").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
+    document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
+    document.getElementById("resetOut").style.display = "block";
     update();
   }
 
@@ -176,16 +207,21 @@
     selIn = {...items[i], index: i};
     document.querySelectorAll(".skin-item").forEach(el => el.classList.remove("selected"));
     document.getElementById(`inv-${i}`).classList.add("selected");
-    document.getElementById("inPanel").innerHTML = `<img src="${selIn.img}"><div>${selIn.name}<br><span style="color:#f1c40f">${selIn.price} ⭐</span></div>`;
+    document.getElementById("inContent").innerHTML = `<img src="${selIn.img}"><div>${selIn.name}<br><span style="color:#f1c40f">${selIn.price} ⭐</span></div>`;
+    document.getElementById("resetIn").style.display = "block";
     update();
   }
 
   function update() {
     if(selIn && selOut) {
-      let c = Math.min(selIn.price / selOut.price, 1);
+      let c = Math.min(selIn.price / selOut.price, 0.95);
       document.getElementById("chanceText").innerText = Math.floor(c * 100) + "%";
       draw(c);
       document.getElementById("uBtn").disabled = false;
+    } else {
+      document.getElementById("chanceText").innerText = "0%";
+      draw(0);
+      document.getElementById("uBtn").disabled = true;
     }
   }
 
@@ -194,17 +230,12 @@
     spinning = true;
     document.getElementById("uBtn").disabled = true;
 
-    const chance = selIn.price / selOut.price;
+    const chance = Math.min(selIn.price / selOut.price, 0.95);
     const win = Math.random() < chance;
     const spins = 7 + Math.random() * 3;
     const halfArc = (chance * Math.PI * 2) / 2;
     
-    let targetAngle;
-    if(win) {
-      targetAngle = (Math.PI / 2) + (Math.random() * (halfArc * 2) - halfArc);
-    } else {
-      targetAngle = (Math.PI / 2) + halfArc + Math.random() * (Math.PI * 2 - halfArc * 2);
-    }
+    let targetAngle = win ? (Math.PI / 2) + (Math.random() * (halfArc * 2) - halfArc) : (Math.PI / 2) + halfArc + Math.random() * (Math.PI * 2 - halfArc * 2);
 
     const finalAngle = (Math.PI * 2 * spins) + targetAngle;
     let start = null;
@@ -221,9 +252,7 @@
           if(win) {
             alert("SUCCESS!");
             items.push(selOut);
-          } else {
-            alert("FAILED!");
-          }
+          } else alert("FAILED!");
           items.splice(selIn.index, 1);
           localStorage.setItem("items", JSON.stringify(items));
           location.reload();
@@ -244,7 +273,7 @@
         <img src="${item.img}">
         <div style="font-size:10px; margin-top:5px;">${item.price} ⭐</div>
       </div>
-    `).join("") : "Empty";
+    `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Inventory Empty</div>";
     draw(0);
   }
 

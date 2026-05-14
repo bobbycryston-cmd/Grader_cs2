@@ -353,39 +353,68 @@
   }
 
   const glockSkins = [
-    { name: "Wasteland Rebel", weight: 1 }, { name: "Bullet Queen", weight: 1 },
-    { name: "Neo-Noir", weight: 1 }, { name: "Gold Toof", weight: 2 },
-    { name: "AXIA", weight: 2 }, { name: "Water Elemental", weight: 3 },
-    { name: "Snack Attack", weight: 4 }, { name: "Vogue", weight: 4 },
-    { name: "Nuclear Garden", weight: 5 }, { name: "Franklin", weight: 5 },
-    { name: "Brass", weight: 6 }, { name: "Steel Disruption", weight: 6 },
-    { name: "Royal Legion", weight: 7 }, { name: "Grinder", weight: 8 },
-    { name: "Moonrise", weight: 8 }, { name: "Weasel", weight: 10 },
-    { name: "Death Rattle", weight: 12 }, { name: "High Beam", weight: 12 },
-    { name: "Night", weight: 15 }, { name: "Sand Dune", weight: 20 },
-    { name: "Groundwater", weight: 20 }, { name: "Oxide Blaze", weight: 25 },
-    { name: "Sacrifice", weight: 25 }, { name: "Clear Polymer", weight: 30 },
-    { name: "Warhawk", weight: 30 }, { name: "Catacombs", weight: 30 },
-    { name: "Wraiths", weight: 35 }, { name: "Off World", weight: 35 },
-    { name: "Ironwork", weight: 40 }, { name: "Bunset Burner", weight: 40 },
-    { name: "Blue Fissure", weight: 45 }, { name: "Candy Apple", weight: 45 },
-    { name: "Reactor", weight: 50 }
+    { name: "Wasteland Rebel", rarity: "red", weight: 1 },
+    { name: "Bullet Queen", rarity: "red", weight: 1 },
+    { name: "Neo-Noir", rarity: "red", weight: 1 },
+    { name: "Gold Toof", rarity: "red", weight: 1 },
+    { name: "AXIA", rarity: "pink", weight: 3 },
+    { name: "Water Elemental", rarity: "pink", weight: 3 },
+    { name: "Snack Attack", rarity: "pink", weight: 3 },
+    { name: "Vogue", rarity: "pink", weight: 3 },
+    { name: "Nuclear Garden", rarity: "purple", weight: 6 },
+    { name: "Franklin", rarity: "purple", weight: 6 },
+    { name: "Brass", rarity: "purple", weight: 6 },
+    { name: "Steel Disruption", rarity: "purple", weight: 6 },
+    { name: "Royal Legion", rarity: "purple", weight: 6 },
+    { name: "Grinder", rarity: "purple", weight: 6 },
+    { name: "Moonrise", rarity: "purple", weight: 6 },
+    { name: "Weasel", rarity: "purple", weight: 6 },
+    { name: "Death Rattle", rarity: "blue", weight: 15 },
+    { name: "High Beam", rarity: "blue", weight: 15 },
+    { name: "Night", rarity: "blue", weight: 15 },
+    { name: "Sand Dune", rarity: "blue", weight: 15 },
+    { name: "Groundwater", rarity: "blue", weight: 15 },
+    { name: "Oxide Blaze", rarity: "gray", weight: 30 },
+    { name: "Sacrifice", rarity: "gray", weight: 30 },
+    { name: "Clear Polymer", rarity: "gray", weight: 30 },
+    { name: "Warhawk", rarity: "gray", weight: 30 },
+    { name: "Catacombs", rarity: "gray", weight: 30 },
+    { name: "Wraiths", rarity: "gray", weight: 30 },
+    { name: "Off World", rarity: "gray", weight: 30 },
+    { name: "Ironwork", rarity: "gray", weight: 30 },
+    { name: "Bunset Burner", rarity: "gray", weight: 30 },
+    { name: "Blue Fissure", rarity: "gray", weight: 30 },
+    { name: "Candy Apple", rarity: "gray", weight: 30 },
+    { name: "Reactor", rarity: "gray", weight: 30 }
   ];
 
   const uspSkins = [
-    { name: "Neo-Noir", weight: 1 }, { name: "Kill Confirmed", weight: 1 },
-    { name: "The Traitor", weight: 1 }, { name: "Orion", weight: 2 },
-    { name: "Cortex", weight: 4 }, { name: "Monster Mashup", weight: 4 },
-    { name: "Overgrowth", weight: 6 }, { name: "Orange Anolis", weight: 8 },
-    { name: "Ticket to Hell", weight: 10 }, { name: "Flashback", weight: 12 },
-    { name: "Ancient Visions", weight: 15 }, { name: "Guardian", weight: 18 },
-    { name: "Cyrex", weight: 20 }, { name: "Road Rash", weight: 22 },
-    { name: "Forest Leaves", weight: 25 }, { name: "Pathfinder", weight: 28 },
-    { name: "Royal Blue", weight: 30 }, { name: "Para Green", weight: 35 },
-    { name: "Purple DDPAT", weight: 35 }, { name: "Night Ops", weight: 40 },
-    { name: "Business Class", weight: 40 }, { name: "Blood Tiger", weight: 45 },
-    { name: "Black Lotus", weight: 50 }, { name: "Check Engine", weight: 50 },
-    { name: "Torque", weight: 55 }, { name: "Lead Conduit", weight: 60 }
+    { name: "Neo-Noir", rarity: "red", weight: 1 },
+    { name: "Kill Confirmed", rarity: "red", weight: 1 },
+    { name: "The Traitor", rarity: "red", weight: 1 },
+    { name: "Orion", rarity: "pink", weight: 4 },
+    { name: "Cortex", rarity: "pink", weight: 4 },
+    { name: "Monster Mashup", rarity: "pink", weight: 4 },
+    { name: "Overgrowth", rarity: "purple", weight: 10 },
+    { name: "Orange Anolis", rarity: "purple", weight: 10 },
+    { name: "Ticket to Hell", rarity: "purple", weight: 10 },
+    { name: "Flashback", rarity: "purple", weight: 10 },
+    { name: "Ancient Visions", rarity: "purple", weight: 10 },
+    { name: "Guardian", rarity: "purple", weight: 10 },
+    { name: "Cyrex", rarity: "purple", weight: 10 },
+    { name: "Road Rash", rarity: "purple", weight: 10 },
+    { name: "Forest Leaves", rarity: "blue", weight: 25 },
+    { name: "Pathfinder", rarity: "blue", weight: 25 },
+    { name: "Royal Blue", rarity: "blue", weight: 25 },
+    { name: "Para Green", rarity: "blue", weight: 25 },
+    { name: "Purple DDPAT", rarity: "gray", weight: 50 },
+    { name: "Night Ops", rarity: "gray", weight: 50 },
+    { name: "Business Class", rarity: "gray", weight: 50 },
+    { name: "Blood Tiger", rarity: "gray", weight: 50 },
+    { name: "Black Lotus", rarity: "gray", weight: 50 },
+    { name: "Check Engine", rarity: "gray", weight: 50 },
+    { name: "Torque", rarity: "gray", weight: 50 },
+    { name: "Lead Conduit", rarity: "gray", weight: 50 }
   ];
 
   let isSpinning = false;
@@ -475,16 +504,21 @@
     setTimeout(() => {
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
       
-      // КЛЮЧОВЕ ОНОВЛЕННЯ ТУТ: додаємо поле img, щоб інвентар його бачив
+      let skinPrice = 5; 
+      if (winner.rarity === "red") skinPrice = 100;
+      else if (winner.rarity === "pink") skinPrice = 70;
+      else if (winner.rarity === "purple") skinPrice = 30;
+      else if (winner.rarity === "blue") skinPrice = 15;
+
       inv.push({ 
-        name: (type==='glock'?'Glock ':'USP ')+winner.name, 
-        price: 5, 
+        name: (type==='glock'?'Glock-18 ':'USP-S ')+winner.name, 
+        price: skinPrice, 
         img: getSkinFile(winner.name, type) 
       });
       
       localStorage.setItem("items", JSON.stringify(inv));
       
-      alert("🎉 Вітаємо! Вам випав предмет: " + winner.name);
+      alert(`🎉 Вітаємо! Вам випав: ${winner.name} (${skinPrice} ⭐)`);
       
       isSpinning = false;
       track.style.transition = "none";

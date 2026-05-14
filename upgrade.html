@@ -14,12 +14,20 @@
     }
 
     .header { width: 100%; display: flex; justify-content: flex-end; padding: 12px; box-sizing: border-box; position: relative; }
-    .header-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 14px; }
-    .header-btn { background: #ff9f43; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .header-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 14px; position: relative; }
     .avatar { width: 36px; height: 36px; border-radius: 50%; background: #333; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
 
+    .menu {
+      position: absolute; top: 60px; right: 0; background: #1a1631;
+      padding: 10px; border-radius: 12px; width: 150px; display: none; z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .menu button {
+      width: 100%; margin-top: 5px; padding: 10px; border: none;
+      border-radius: 8px; cursor: pointer; color: black; background: white; font-weight: bold;
+    }
+
     .upgrade-container { width: 100%; max-width: 800px; padding: 15px; box-sizing: border-box; }
-    
     .main-ui { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 15px; margin-top: 10px; }
     
     .side-panel {
@@ -54,8 +62,6 @@
 
     .inventory-section { width: 100%; margin-top: 30px; }
     .skin-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; scroll-behavior: smooth; }
-    .skin-scroll::-webkit-scrollbar { height: 4px; }
-    .skin-scroll::-webkit-scrollbar-thumb { background: #ff9f43; border-radius: 10px; }
     
     .skin-item {
       min-width: 110px; background: rgba(255,255,255,0.03); padding: 12px;
@@ -70,9 +76,10 @@
 <div class="header">
   <div class="header-box">
     <div style="font-weight:bold;"><span id="balance" style="color:#f1c40f;">0</span> ⭐</div>
-    <button class="header-btn">+</button>
-    <div class="profile" onclick="location.href='index.html'">
-      <img id="avatar" class="avatar">
+    <img id="avatar" class="avatar" onclick="toggleMenu()">
+    <div class="menu" id="menu">
+      <button onclick="location.href='index.html'">🏠 Home</button>
+      <button onclick="location.href='inventory.html'">🎒 Inventory</button>
     </div>
   </div>
 </div>
@@ -107,7 +114,7 @@
   </div>
 
   <div class="inventory-section">
-    <h4 style="margin: 0 0 10px 5px; color: #888;">YOUR INVENTORY</h4>
+    <h4 style="margin: 0 0 10px 5px; color: #888; text-transform: uppercase;">Your Inventory</h4>
     <div class="skin-scroll" id="userInv"></div>
   </div>
 </div>
@@ -123,6 +130,11 @@
     { name: "AWP Hyper Beast", price: 600, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17PLfYQJD_9W7m5a0mvLwOq7c2G1QvJByiL_E99Sk3ALsr0ZpZz_6I4-ccVVsMFvX-1O3w7y605S1vczAn3E2v3Em4XfD30vgTMo_H2E" },
     { name: "M4A4 Howl", price: 2000, img: "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09Kzm7-FmP7mDLfYkWNF18lwmO7Eu46j3VHt_0VvMT31LY-QdFVqYV7Y_gS-xeu605S-7s7NynRi6XIn4S2OnBapwUYbR_m_7RE" }
   ];
+
+  function toggleMenu() {
+    const m = document.getElementById("menu");
+    m.style.display = m.style.display === "block" ? "none" : "block";
+  }
 
   function draw(chance, arrowAngle = 0) {
     const canvas = document.getElementById("wheelCanvas");
@@ -146,7 +158,6 @@
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(arrowAngle - Math.PI/2);
-    
     ctx.beginPath();
     ctx.moveTo(r - 30, -10);
     ctx.lineTo(r + 15, 0);
@@ -191,13 +202,7 @@
     const chance = selIn.price / selOut.price;
     const win = Math.random() < chance;
     const spins = 5 + Math.random() * 3; 
-    let targetAngle;
-
-    if(win) {
-      targetAngle = Math.random() * (chance * Math.PI * 2);
-    } else {
-      targetAngle = (chance * Math.PI * 2) + Math.random() * ((1 - chance) * Math.PI * 2);
-    }
+    let targetAngle = win ? Math.random() * (chance * Math.PI * 2) : (chance * Math.PI * 2) + Math.random() * ((1 - chance) * Math.PI * 2);
 
     const finalAngle = (Math.PI * 2 * spins) + targetAngle;
     let start = null;
@@ -206,10 +211,8 @@
       if(!start) start = t;
       let prog = (t - start) / 4000;
       if(prog > 1) prog = 1;
-
       let ease = 1 - Math.pow(1 - prog, 3);
       draw(chance, finalAngle * ease);
-
       if(prog < 1) requestAnimationFrame(animate);
       else {
         setTimeout(() => {
@@ -240,7 +243,6 @@
         <div style="margin-top:5px">${item.price} ⭐</div>
       </div>
     `).join("") : "<div style='opacity:0.3; padding:20px;'>Empty</div>";
-    
     draw(0);
   }
 
@@ -252,6 +254,10 @@
     document.getElementById("inPanel").innerHTML = `<img src="${selIn.img}"><div>${selIn.name}<br><span style="color:#f1c40f">${selIn.price} ⭐</span></div>`;
     update();
   }
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".header-box")) document.getElementById("menu").style.display = "none";
+  });
 
   init();
 </script>

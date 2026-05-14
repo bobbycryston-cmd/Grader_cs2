@@ -142,28 +142,36 @@
     update();
   }
 
-  function draw(chance, arrowAngle = Math.PI/2) {
+  function draw(chance, arrowDeg = 90) {
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0,0,500,500);
     const cx = 250, cy = 250, r = 210;
+
+    // Background circle
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 25; ctx.stroke();
+    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 30; ctx.stroke();
+
+    // Orange sector (fixed at the bottom)
     if (chance > 0) {
       const arcSize = Math.PI * 2 * chance;
       ctx.beginPath();
       ctx.arc(cx, cy, r, (Math.PI/2) - (arcSize/2), (Math.PI/2) + (arcSize/2));
-      ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 25;
+      ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 30;
       ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
+
+    // Moving Arrow
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(arrowAngle);
+    ctx.rotate(arrowDeg * Math.PI / 180);
     ctx.beginPath();
-    ctx.moveTo(r - 35, -12); ctx.lineTo(r + 15, 0); ctx.lineTo(r - 35, 12);
+    ctx.moveTo(r - 35, -15);
+    ctx.lineTo(r + 20, 0);
+    ctx.lineTo(r - 35, 15);
     ctx.fillStyle = "white"; ctx.fill();
     ctx.restore();
   }
@@ -201,11 +209,11 @@
     if(selIn && selOut) {
       let c = Math.min(selIn.price / selOut.price, 0.95);
       document.getElementById("chanceText").innerText = Math.floor(c * 100) + "%";
-      draw(c);
+      draw(c, 90);
       document.getElementById("uBtn").disabled = false;
     } else {
       document.getElementById("chanceText").innerText = "0%";
-      draw(0);
+      draw(0, 90);
       document.getElementById("uBtn").disabled = true;
     }
   }
@@ -214,26 +222,35 @@
     if(spinning) return;
     spinning = true;
     document.getElementById("uBtn").disabled = true;
+
     const chance = Math.min(selIn.price / selOut.price, 0.95);
     const win = Math.random() < chance;
-    const spins = 8 + Math.random() * 2;
-    const arcSize = Math.PI * 2 * chance;
-    const startPos = Math.PI / 2;
-    let targetAngle;
+    
+    const chanceDeg = chance * 360;
+    const spins = 6 + Math.random() * 3;
+    
+    let targetDeg;
     if(win) {
-      targetAngle = startPos + (Math.random() * arcSize - (arcSize / 2));
+      // Target orange: between (90 - half) and (90 + half)
+      targetDeg = 90 + (Math.random() * chanceDeg - (chanceDeg / 2));
     } else {
-      let offset = (arcSize / 2) + Math.random() * (Math.PI * 2 - arcSize);
-      targetAngle = startPos + offset;
+      // Target dark: anywhere else
+      targetDeg = 90 + (chanceDeg / 2) + Math.random() * (360 - chanceDeg);
     }
-    const finalAngle = (Math.PI * 2 * spins) + targetAngle;
-    let start = null;
+
+    const finalDeg = (360 * spins) + targetDeg;
+    let startTime = null;
+
     function animate(t) {
-      if(!start) start = t;
-      let prog = (t - start) / 4500;
+      if(!startTime) startTime = t;
+      let prog = (t - startTime) / 4500;
       if(prog > 1) prog = 1;
+
       let ease = 1 - Math.pow(1 - prog, 4);
-      draw(chance, finalAngle * ease);
+      let currentDeg = finalDeg * ease;
+      
+      draw(chance, currentDeg);
+
       if(prog < 1) requestAnimationFrame(animate);
       else {
         setTimeout(() => {
@@ -263,7 +280,7 @@
         <div style="font-size:10px; margin-top:5px;">${item.price} ⭐</div>
       </div>
     `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Inventory Empty</div>";
-    draw(0);
+    draw(0, 90);
   }
   init();
 </script>

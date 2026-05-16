@@ -336,9 +336,11 @@
       if(prog < 1) requestAnimationFrame(animate);
       else {
         setTimeout(() => {
+          let savedTarget = {...selOut};
+          
           if(win) {
-            alert("SUCCESS! You got: " + selOut.name);
-            items.push({...selOut});
+            alert("SUCCESS! You got: " + savedTarget.name);
+            items.push({...savedTarget});
           } else {
             alert("FAILED! Items lost.");
           }
@@ -349,7 +351,23 @@
           });
           
           localStorage.setItem("items", JSON.stringify(items));
-          location.reload();
+          
+          selIn = [];
+          document.getElementById("inContent").innerHTML = "Select Skin";
+          document.getElementById("resetIn").style.display = "none";
+          
+          if(win) {
+            selOut = savedTarget;
+            document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
+            document.getElementById("resetOut").style.display = "block";
+          } else {
+            selOut = null;
+            document.getElementById("outContent").innerHTML = "Target Skin";
+            document.getElementById("resetOut").style.display = "none";
+          }
+          
+          spinning = false;
+          init();
         }, 500);
       }
     }
@@ -367,7 +385,13 @@
         <div style="font-size:10px; margin-top:5px;">${item.price} ⭐</div>
       </div>
      `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Inventory Empty</div>";
-    draw(0, 90);
+    
+    selIn.forEach(item => {
+      const el = document.getElementById(`inv-${item.index}`);
+      if(el) el.classList.add("selected");
+    });
+    
+    update();
   }
   init();
 </script>

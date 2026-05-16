@@ -356,15 +356,9 @@
           document.getElementById("inContent").innerHTML = "Select Skin";
           document.getElementById("resetIn").style.display = "none";
           
-          if(win) {
-            selOut = savedTarget;
-            document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
-            document.getElementById("resetOut").style.display = "block";
-          } else {
-            selOut = null;
-            document.getElementById("outContent").innerHTML = "Target Skin";
-            document.getElementById("resetOut").style.display = "none";
-          }
+          selOut = savedTarget;
+          document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
+          document.getElementById("resetOut").style.display = "block";
           
           spinning = false;
           init();

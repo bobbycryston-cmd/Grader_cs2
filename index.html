@@ -184,6 +184,7 @@
       color: black;
     }
 
+    /* Оновлена рулетка під кілька стрічок поруч */
     #rouletteModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -195,22 +196,32 @@
     }
 
     .roulette-content {
-      width: 90%;
-      max-width: 500px;
+      width: 95%;
+      max-width: 600px;
       background: #111;
       border-radius: 16px;
       padding: 20px;
       position: relative;
+      box-sizing: border-box;
+    }
+
+    /* Контейнер для стрічок, що стоять пліч-о-пліч */
+    .roulettes-container {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      justify-content: center;
+      width: 100%;
     }
 
     .roulette-window {
       position: relative;
       height: 90px;
+      flex: 1;
       overflow: hidden;
       border: 2px solid #333;
       border-radius: 10px;
       background: #050505;
-      margin: 20px 0;
     }
 
     .pointer {
@@ -220,9 +231,10 @@
       background: #ff9f43;
       z-index: 20;
       transform: translateX(-50%);
+      box-shadow: 0 0 8px #ff9f43;
     }
 
-    #rouletteTrack {
+    .roulette-track {
       display: flex;
       position: absolute;
       left: 0; top: 0; height: 100%;
@@ -234,12 +246,38 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      box-sizing: border-box;
+      border-right: 1px solid rgba(255,255,255,0.02);
     }
 
     .roulette-item img {
       width: 70px;
       height: 50px;
       object-fit: contain;
+    }
+
+    /* Кнопки мульти-кейсу */
+    .multicase-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .multi-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .multi-btn.active {
+      background: #ff9f43;
+      color: black;
+      border-color: #ff9f43;
     }
 
     #openBtn {
@@ -253,18 +291,21 @@
       color: black !important;
       font-size: 16px;
     }
+    #openBtn:disabled { opacity: 0.3; cursor: not-allowed; }
 
     #skinsList {
       margin-top: 15px; 
       display: grid; 
-      grid-template-columns: repeat(5, 1fr); 
+      grid-template-columns: repeat(6, 1fr); 
       gap: 5px; 
-      max-height: 120px; 
+      max-height: 100px; 
       overflow-y: auto;
     }
 
     #skinsList img {
-      width: 100%; height: 50px; object-fit: contain;
+      width: 100%; height: 45px; object-fit: contain;
+      background: rgba(255,255,255,0.02);
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -319,10 +360,15 @@
   <div class="roulette-content">
     <div onclick="closeRoulette()" style="position:absolute; right:15px; top:10px; cursor:pointer;">✖</div>
     <h3 id="modalTitle" style="text-align:center; margin-top:0;">Case</h3>
-    <div class="roulette-window">
-      <div class="pointer"></div>
-      <div id="rouletteTrack"></div>
+    
+    <div class="multicase-selector">
+      <button class="multi-btn active" id="btnX1" onclick="changeMulti(1)">X1</button>
+      <button class="multi-btn" id="btnX3" onclick="changeMulti(3)">X3</button>
+      <button class="multi-btn" id="btnX5" onclick="changeMulti(5)">X5</button>
     </div>
+
+    <div class="roulettes-container" id="roulettesContainer"></div>
+
     <button id="openBtn">OPEN (15 ⭐)</button>
     <div id="skinsList"></div>
   </div>
@@ -418,6 +464,9 @@
   ];
 
   let isSpinning = false;
+  let currentCaseType = 'glock';
+  let currentCount = 1;
+  const CASE_PRICE = 15;
 
   function toggleMenu() {
     const menu = document.getElementById("menu");
@@ -450,79 +499,130 @@
     }
   }
 
+  function changeMulti(count) {
+    if (isSpinning) return;
+    currentCount = count;
+    
+    document.querySelectorAll('.multi-btn').forEach(btn => btn.classList.remove('active'));
+    if(count === 1) document.getElementById('btnX1').classList.add('active');
+    if(count === 3) document.getElementById('btnX3').classList.add('active');
+    if(count === 5) document.getElementById('btnX5').classList.add('active');
+
+    document.getElementById("openBtn").innerText = `OPEN (${CASE_PRICE * count} ⭐)`;
+    buildRouletteTracks();
+  }
+
   function startRoulette(type) {
     if (isSpinning) return;
+    currentCaseType = type;
+    
     const modal = document.getElementById("rouletteModal");
-    const track = document.getElementById("rouletteTrack");
-    const list = document.getElementById("skinsList");
-    const skins = type === 'glock' ? glockSkins : uspSkins;
-
     document.getElementById("modalTitle").innerText = type === 'glock' ? "Glock-18 Case" : "USP-S Case";
     modal.style.display = "flex";
     
-    track.style.transition = "none";
-    track.style.transform = "translateX(0)";
-    track.innerHTML = "";
+    // Відображаємо весь список можливого дропу знизу
+    const list = document.getElementById("skinsList");
     list.innerHTML = "";
-
-    for(let i=0; i<45; i++) {
-      const rnd = skins[Math.floor(Math.random() * skins.length)];
-      track.innerHTML += `<div class="roulette-item"><img src="${getSkinFile(rnd.name, type)}"></div>`;
-    }
+    const skins = type === 'glock' ? glockSkins : uspSkins;
     skins.forEach(s => { list.innerHTML += `<img src="${getSkinFile(s.name, type)}">`; });
-    document.getElementById("openBtn").onclick = () => spinRoulette(type);
+
+    changeMulti(1); // За дефолтом відкриваємо 1 штуку
   }
 
-  function spinRoulette(type) {
-    if (isSpinning || stars < 15) return;
+  function buildRouletteTracks() {
+    const container = document.getElementById("roulettesContainer");
+    container.innerHTML = "";
+    const skins = currentCaseType === 'glock' ? glockSkins : uspSkins;
+
+    for (let r = 0; r < currentCount; r++) {
+      let trackHtml = '';
+      for (let i = 0; i < 45; i++) {
+        const rnd = skins[Math.floor(Math.random() * skins.length)];
+        trackHtml += `<div class="roulette-item"><img src="${getSkinFile(rnd.name, currentCaseType)}"></div>`;
+      }
+
+      container.innerHTML += `
+        <div class="roulette-window">
+          <div class="pointer"></div>
+          <div class="roulette-track" id="track-${r}" style="transform: translateX(0); transition: none;">
+            ${trackHtml}
+          </div>
+        </div>
+      `;
+    }
+    document.getElementById("openBtn").onclick = () => spinRoulette();
+  }
+
+  function spinRoulette() {
+    const totalCost = CASE_PRICE * currentCount;
+    if (isSpinning || stars < totalCost) return;
 
     updateVolume();
     openSound.currentTime = 0;
     openSound.play().catch(e => console.log("Sound error"));
 
-    stars -= 15;
+    stars -= totalCost;
     localStorage.setItem("stars", stars);
     document.getElementById("balance").innerText = stars;
     isSpinning = true;
+    document.getElementById("openBtn").disabled = true;
 
-    const skins = type === 'glock' ? glockSkins : uspSkins;
+    const skins = currentCaseType === 'glock' ? glockSkins : uspSkins;
     const totalWeight = skins.reduce((s, i) => s + i.weight, 0);
-    let rnd = Math.random() * totalWeight;
-    let winner = skins[skins.length - 1];
-    for (let s of skins) { if (rnd < s.weight) { winner = s; break; } rnd -= s.weight; }
-
-    const track = document.getElementById("rouletteTrack");
-    const winPos = 35; 
-    track.querySelectorAll('.roulette-item')[winPos].innerHTML = `<img src="${getSkinFile(winner.name, type)}">`;
     
-    const windowWidth = document.querySelector('.roulette-window').offsetWidth;
-    const offset = (winPos * 90) - (windowWidth / 2) + 45;
+    let winners = [];
+    const winPos = 35; 
+    const itemWidth = 90;
 
-    track.style.transition = "transform 8s cubic-bezier(0.15, 0, 0.15, 1)";
-    track.style.transform = `translateX(-${offset}px)`;
+    // Крутимо кожну стрічку окремо
+    for (let r = 0; r < currentCount; r++) {
+      let rnd = Math.random() * totalWeight;
+      let winner = skins[skins.length - 1];
+      for (let s of skins) { 
+        if (rnd < s.weight) { winner = s; break; } 
+        rnd -= s.weight; 
+      }
+      winners.push(winner);
+
+      const track = document.getElementById(`track-${r}`);
+      track.querySelectorAll('.roulette-item')[winPos].innerHTML = `<img src="${getSkinFile(winner.name, currentCaseType)}">`;
+      
+      const windowWidth = track.parentElement.offsetWidth;
+      
+      // АЗАРТНА ЗУПИНКА: випадковий зсув від 5 до 85 пікселів всередині іконки замість чітких 45 по центру
+      const randomInnerOffset = 5 + Math.floor(Math.random() * 80);
+      const offset = (winPos * itemWidth) - (windowWidth / 2) + randomInnerOffset;
+
+      track.style.transition = "transform 8s cubic-bezier(0.15, 0, 0.15, 1)";
+      track.style.transform = `translateX(-${offset}px)`;
+    }
 
     setTimeout(() => {
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
+      let alertMessage = "🎉 Вітаємо з дропом:\n";
       
-      let skinPrice = 5; 
-      if (winner.rarity === "red") skinPrice = 100;
-      else if (winner.rarity === "pink") skinPrice = 70;
-      else if (winner.rarity === "purple") skinPrice = 30;
-      else if (winner.rarity === "blue") skinPrice = 15;
+      winners.forEach(winner => {
+        let skinPrice = 5; 
+        if (winner.rarity === "red") skinPrice = 100;
+        else if (winner.rarity === "pink") skinPrice = 70;
+        else if (winner.rarity === "purple") skinPrice = 30;
+        else if (winner.rarity === "blue") skinPrice = 15;
 
-      inv.push({ 
-        name: (type==='glock'?'Glock-18 ':'USP-S ')+winner.name, 
-        price: skinPrice, 
-        img: getSkinFile(winner.name, type) 
+        inv.push({ 
+          name: (currentCaseType === 'glock' ? 'Glock-18 ' : 'USP-S ') + winner.name, 
+          price: skinPrice, 
+          img: getSkinFile(winner.name, currentCaseType) 
+        });
+
+        alertMessage += `• ${winner.name} (${skinPrice} ⭐)\n`;
       });
       
       localStorage.setItem("items", JSON.stringify(inv));
-      
-      alert(`🎉 Вітаємо! Вам випав: ${winner.name} (${skinPrice} ⭐)`);
+      alert(alertMessage);
       
       isSpinning = false;
-      track.style.transition = "none";
-      track.style.transform = "translateX(0)";
+      document.getElementById("openBtn").disabled = false;
+      buildRouletteTracks(); // Скидання для наступного крутку
     }, 8500);
   }
 

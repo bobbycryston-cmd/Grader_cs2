@@ -479,7 +479,6 @@
       stars += 100;
       localStorage.setItem("stars", stars);
       document.getElementById("balance").innerText = stars;
-      alert("🎉 +100 ⭐");
       closePromo();
     } else { alert("❌ Error"); }
   }
@@ -584,7 +583,6 @@
       
       const windowWidth = track.parentElement.offsetWidth;
       
-      // Gamble stop: random shift inside the item container
       const randomInnerOffset = 5 + Math.floor(Math.random() * 80);
       const offset = (winPos * itemWidth) - (windowWidth / 2) + randomInnerOffset;
 
@@ -594,7 +592,7 @@
 
     setTimeout(() => {
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
-      let alertMessage = "🎉 Congratulations! You received:\n";
+      let alertMessage = "🎉 You received:\n";
       
       winners.forEach(winner => {
         let skinPrice = 5; 

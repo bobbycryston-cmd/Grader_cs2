@@ -42,7 +42,8 @@
     #wheelCanvas { width: 100%; height: 100%; }
     .chance-display {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-size: 28px; font-weight: bold; color: white;
+      font-size: 24px; font-weight: bold; color: white; text-align: center; width: 80%;
+      pointer-events: none; line-height: 1.2;
     }
     .controls-row { display: flex; gap: 6px; margin: 20px 0; width: 100%; justify-content: center; flex-wrap: wrap; }
     .btn-quick {
@@ -114,6 +115,7 @@
 <script>
   let items = JSON.parse(localStorage.getItem("items") || "[]");
   let selIn = [], selOut = null, spinning = false;
+  let currentStatus = "idle";
 
   const targets = [
     { name: "Glock-18 | Oxide Blaze", price: 5, img: "glock18_oxide_blaze.png" },
@@ -196,6 +198,7 @@
 
   function resetSelection(type) {
     if(spinning) return;
+    currentStatus = "idle";
     if(type === 'in') {
       selIn = [];
       document.getElementById("inContent").innerHTML = "Select Skin";
@@ -214,18 +217,32 @@
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0,0,500,500);
     const cx = 250, cy = 250, r = 210;
+    
+    ctx.save();
+    if(currentStatus === "win") {
+      ctx.strokeStyle = "#2ecc71"; ctx.shadowBlur = 20; ctx.shadowColor = "#2ecc71";
+    } else if(currentStatus === "fail") {
+      ctx.strokeStyle = "#e74c3c"; ctx.shadowBlur = 20; ctx.shadowColor = "#e74c3c";
+    } else {
+      ctx.strokeStyle = "#16122d"; ctx.shadowBlur = 0;
+    }
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = "#16122d"; ctx.lineWidth = 30; ctx.stroke();
+    ctx.lineWidth = 30; ctx.stroke();
+    ctx.restore();
+    
     if (chance > 0) {
       const arcRad = Math.PI * 2 * chance;
       ctx.beginPath();
       ctx.arc(cx, cy, r, (Math.PI/2) - (arcRad/2), (Math.PI/2) + (arcRad/2));
       ctx.strokeStyle = "#ff9f43"; ctx.lineWidth = 30;
-      ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
+      if(currentStatus === "idle") {
+        ctx.shadowBlur = 15; ctx.shadowColor = "#ff9f43";
+      }
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
+    
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(currentDeg * Math.PI / 180);
@@ -239,11 +256,13 @@
 
   function autoPick(mult) {
     if(selIn.length === 0 || spinning) return;
+    currentStatus = "idle";
     pickClosest(getSelInPrice() * mult);
   }
 
   function autoPickChance(c) {
     if(selIn.length === 0 || spinning) return;
+    currentStatus = "idle";
     pickClosest(getSelInPrice() / c);
   }
 
@@ -258,6 +277,7 @@
 
   function selectIn(i) {
     if(spinning) return;
+    currentStatus = "idle";
     
     const foundIdx = selIn.findIndex(item => item.index === i);
     
@@ -290,13 +310,14 @@
   }
 
   function update() {
+    if(currentStatus !== "idle") return;
     if(selIn.length > 0 && selOut) {
       let c = Math.min(getSelInPrice() / selOut.price, 0.95);
-      document.getElementById("chanceText").innerText = Math.floor(c * 100) + "%";
+      document.getElementById("chanceText").innerHTML = Math.floor(c * 100) + "%";
       draw(c, 90);
       document.getElementById("uBtn").disabled = false;
     } else {
-      document.getElementById("chanceText").innerText = "0%";
+      document.getElementById("chanceText").innerHTML = "0%";
       draw(0, 90);
       document.getElementById("uBtn").disabled = true;
     }
@@ -305,6 +326,7 @@
   function startUpgrade() {
     if(spinning) return;
     spinning = true;
+    currentStatus = "idle";
     document.getElementById("uBtn").disabled = true;
     
     const totalPriceIn = getSelInPrice();
@@ -333,36 +355,41 @@
       
       let currentPos = startDeg + (totalDist * ease);
       draw(chance, currentPos % 360);
-      if(prog < 1) requestAnimationFrame(animate);
-      else {
-        setTimeout(() => {
-          let savedTarget = {...selOut};
-          
-          if(win) {
-            alert("SUCCESS! You got: " + savedTarget.name);
-            items.push({...savedTarget});
-          } else {
-            alert("FAILED! Items lost.");
-          }
-          
-          let indicesToRemove = selIn.map(item => item.index).sort((a, b) => b - a);
-          indicesToRemove.forEach(idx => {
-            items.splice(idx, 1);
-          });
-          
-          localStorage.setItem("items", JSON.stringify(items));
-          
-          selIn = [];
-          document.getElementById("inContent").innerHTML = "Select Skin";
-          document.getElementById("resetIn").style.display = "none";
-          
-          selOut = savedTarget;
-          document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
-          document.getElementById("resetOut").style.display = "block";
-          
-          spinning = false;
-          init();
-        }, 500);
+      
+      if(prog < 1) {
+        document.getElementById("chanceText").innerHTML = Math.floor(chance * 100) + "%";
+        requestAnimationFrame(animate);
+      } else {
+        let savedTarget = {...selOut};
+        
+        if(win) {
+          currentStatus = "win";
+          document.getElementById("chanceText").innerHTML = "<span style='color:#2ecc71; font-size:20px; font-weight:900;'>SUCCESS</span>";
+          items.push({...savedTarget});
+        } else {
+          currentStatus = "fail";
+          document.getElementById("chanceText").innerHTML = "<span style='color:#e74c3c; font-size:21px; font-weight:900;'>FAILED</span>";
+        }
+        
+        draw(chance, currentPos % 360);
+        
+        let indicesToRemove = selIn.map(item => item.index).sort((a, b) => b - a);
+        indicesToRemove.forEach(idx => {
+          items.splice(idx, 1);
+        });
+        
+        localStorage.setItem("items", JSON.stringify(items));
+        
+        selIn = [];
+        document.getElementById("inContent").innerHTML = "Select Skin";
+        document.getElementById("resetIn").style.display = "none";
+        
+        selOut = savedTarget;
+        document.getElementById("outContent").innerHTML = `<img src="${selOut.img}"><div>${selOut.name}<br><span style="color:#f1c40f">${selOut.price} ⭐</span></div>`;
+        document.getElementById("resetOut").style.display = "block";
+        
+        spinning = false;
+        init();
       }
     }
     requestAnimationFrame(animate);
@@ -385,7 +412,9 @@
       if(el) el.classList.add("selected");
     });
     
-    update();
+    if(currentStatus === "idle") {
+      update();
+    }
   }
   init();
 </script>

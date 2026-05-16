@@ -184,7 +184,6 @@
       color: black;
     }
 
-    /* Оновлена рулетка під кілька стрічок поруч */
     #rouletteModal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -205,7 +204,6 @@
       box-sizing: border-box;
     }
 
-    /* Контейнер для стрічок, що стоять пліч-о-пліч */
     .roulettes-container {
       display: flex;
       gap: 10px;
@@ -256,7 +254,6 @@
       object-fit: contain;
     }
 
-    /* Кнопки мульти-кейсу */
     .multicase-selector {
       display: flex;
       justify-content: center;
@@ -326,7 +323,7 @@
   </div>
 
   <div class="menu" id="menu">
-    <div style="font-size: 12px; margin-bottom: 5px;">🔊 Гучність</div>
+    <div style="font-size: 12px; margin-bottom: 5px;">🔊 Volume</div>
     <input type="range" id="volumeSlider" min="0" max="100" value="50" style="width:100%">
     <button onclick="window.location.href='inventory.html'">🎒 Inventory</button>
     <button onclick="window.location.href='upgrade.html'">⚡ Upgrade</button>
@@ -348,9 +345,9 @@
 <div class="promo-modal" id="promoModal">
   <div class="promo-box">
     <div onclick="closePromo()" style="position:absolute; right:10px; top:5px; cursor:pointer;">✖</div>
-    <div style="text-align:center; font-weight:bold;">Промокод</div>
+    <div style="text-align:center; font-weight:bold;">Promo Code</div>
     <div class="promo-input-box">
-      <input type="text" id="promoInput" placeholder="Код">
+      <input type="text" id="promoInput" placeholder="Code">
       <button class="promo-btn" onclick="applyPromo()">OK</button>
     </div>
   </div>
@@ -520,13 +517,12 @@
     document.getElementById("modalTitle").innerText = type === 'glock' ? "Glock-18 Case" : "USP-S Case";
     modal.style.display = "flex";
     
-    // Відображаємо весь список можливого дропу знизу
     const list = document.getElementById("skinsList");
     list.innerHTML = "";
     const skins = type === 'glock' ? glockSkins : uspSkins;
     skins.forEach(s => { list.innerHTML += `<img src="${getSkinFile(s.name, type)}">`; });
 
-    changeMulti(1); // За дефолтом відкриваємо 1 штуку
+    changeMulti(1);
   }
 
   function buildRouletteTracks() {
@@ -574,7 +570,6 @@
     const winPos = 35; 
     const itemWidth = 90;
 
-    // Крутимо кожну стрічку окремо
     for (let r = 0; r < currentCount; r++) {
       let rnd = Math.random() * totalWeight;
       let winner = skins[skins.length - 1];
@@ -589,7 +584,7 @@
       
       const windowWidth = track.parentElement.offsetWidth;
       
-      // АЗАРТНА ЗУПИНКА: випадковий зсув від 5 до 85 пікселів всередині іконки замість чітких 45 по центру
+      // Gamble stop: random shift inside the item container
       const randomInnerOffset = 5 + Math.floor(Math.random() * 80);
       const offset = (winPos * itemWidth) - (windowWidth / 2) + randomInnerOffset;
 
@@ -599,7 +594,7 @@
 
     setTimeout(() => {
       let inv = JSON.parse(localStorage.getItem("items") || "[]");
-      let alertMessage = "🎉 Вітаємо з дропом:\n";
+      let alertMessage = "🎉 Congratulations! You received:\n";
       
       winners.forEach(winner => {
         let skinPrice = 5; 
@@ -622,7 +617,7 @@
       
       isSpinning = false;
       document.getElementById("openBtn").disabled = false;
-      buildRouletteTracks(); // Скидання для наступного крутку
+      buildRouletteTracks();
     }, 8500);
   }
 

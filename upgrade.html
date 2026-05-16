@@ -212,6 +212,36 @@
     update();
   }
 
+  function drawArrow(ctx, cx, cy, r, currentDeg) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(currentDeg * Math.PI / 180);
+    
+    // Світіння стрілки
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#ff9f43";
+    ctx.fillStyle = "#ff9f43";
+
+    const startX = r - 45; // Початок хвоста ближче до центру
+    const headX = r + 20;  // Кінчик носа
+    const tailWidth = 6;   // Ширина хвоста
+    const headSize = 20;   // Розмір голови
+
+    ctx.beginPath();
+    // Малюємо складну форму стрілки
+    ctx.moveTo(startX, -tailWidth/2); // Верхній кут хвоста
+    ctx.lineTo(headX - headSize, -tailWidth/2); // До основи голови
+    ctx.lineTo(headX - headSize, -headSize/1.5); // Розширення голови вгору
+    ctx.lineTo(headX, 0); // Кінчик носа
+    ctx.lineTo(headX - headSize, headSize/1.5); // Розширення голови вниз
+    ctx.lineTo(headX - headSize, tailWidth/2); // Назад до основи голови
+    ctx.lineTo(startX, tailWidth/2); // Нижній кут хвоста
+    ctx.closePath();
+    
+    ctx.fill();
+    ctx.restore();
+  }
+
   function draw(chance, currentDeg) {
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
@@ -243,15 +273,8 @@
       ctx.shadowBlur = 0;
     }
     
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(currentDeg * Math.PI / 180);
-    ctx.beginPath();
-    ctx.moveTo(r - 35, -15);
-    ctx.lineTo(r + 20, 0);
-    ctx.lineTo(r - 35, 15);
-    ctx.fillStyle = "white"; ctx.fill();
-    ctx.restore();
+    // Використовуємо нову функцію для малювання стрілки
+    drawArrow(ctx, cx, cy, r, currentDeg);
   }
 
   function autoPick(mult) {

@@ -111,17 +111,79 @@
   let selIn = null, selOut = null, spinning = false;
 
   const targets = [
+    // Сірі (5 ⭐)
+    { name: "Glock-18 | Oxide Blaze", price: 5, img: "glock18_oxide_blaze.png" },
     { name: "Glock-18 | Sacrifice", price: 5, img: "glock18_sacrifice.png" },
+    { name: "Glock-18 | Clear Polymer", price: 5, img: "glock18_clear_polymer.png" },
+    { name: "Glock-18 | Warhawk", price: 5, img: "glock18_warhawk.png" },
+    { name: "Glock-18 | Catacombs", price: 5, img: "glock18_catacombs.png" },
+    { name: "Glock-18 | Wraiths", price: 5, img: "glock18_wraiths.png" },
+    { name: "Glock-18 | Off World", price: 5, img: "glock18_off_world.png" },
+    { name: "Glock-18 | Ironwork", price: 5, img: "glock18_ironwork.png" },
+    { name: "Glock-18 | Bunset Burner", price: 5, img: "glock18_bunset_burner.png" },
+    { name: "Glock-18 | Blue Fissure", price: 5, img: "glock18_blue_fissure.png" },
+    { name: "Glock-18 | Candy Apple", price: 5, img: "glock18_candy_apple.png" },
+    { name: "Glock-18 | Reactor", price: 5, img: "glock18_reactor.png" },
+    { name: "USP-S | Purple DDPAT", price: 5, img: "usp_purple.png" },
+    { name: "USP-S | Night Ops", price: 5, img: "usp_night.png" },
+    { name: "USP-S | Business Class", price: 5, img: "usp_business.png" },
+    { name: "USP-S | Blood Tiger", price: 5, img: "usp_blood.png" },
+    { name: "USP-S | Black Lotus", price: 5, img: "usp_black.png" },
+    { name: "USP-S | Check Engine", price: 5, img: "usp_check.png" },
+    { name: "USP-S | Torque", price: 5, img: "usp_torque.png" },
     { name: "USP-S | Lead Conduit", price: 5, img: "usp_lead.png" },
-    { name: "Glock-18 | Franklin", price: 15, img: "glock18_franklin.png" },
-    { name: "USP-S | Ticket to Hell", price: 15, img: "usp_ticket.png" },
-    { name: "Glock-18 | Water Elemental", price: 40, img: "glock18_water_elemental.png" },
-    { name: "USP-S | Cortex", price: 40, img: "usp_cortex.png" },
+
+    // Сині (15 ⭐)
+    { name: "Glock-18 | Death Rattle", price: 15, img: "glock18_death_rattle.png" },
+    { name: "Glock-18 | High Beam", price: 15, img: "glock18_high_beam.png" },
+    { name: "Glock-18 | Night", price: 15, img: "glock18_night.png" },
+    { name: "Glock-18 | Sand Dune", price: 15, img: "glock18_sand_dune.png" },
+    { name: "Glock-18 | Groundwater", price: 15, img: "glock18_groundwater.png" },
+    { name: "USP-S | Forest Leaves", price: 15, img: "usp_forest.png" },
+    { name: "USP-S | Pathfinder", price: 15, img: "usp_pathfinder.png" },
+    { name: "USP-S | Royal Blue", price: 15, img: "usp_royal.png" },
+    { name: "USP-S | Para Green", price: 15, img: "usp_para.png" },
+
+    // Фіолетові (30 ⭐)
+    { name: "Glock-18 | Nuclear Garden", price: 30, img: "glock18_nuclear_garden.png" },
+    { name: "Glock-18 | Franklin", price: 30, img: "glock18_franklin.png" },
+    { name: "Glock-18 | Brass", price: 30, img: "glock18_brass.png" },
+    { name: "Glock-18 | Steel Disruption", price: 30, img: "glock18_steel_disruption.png" },
+    { name: "Glock-18 | Royal Legion", price: 30, img: "glock18_royal_legion.png" },
+    { name: "Glock-18 | Grinder", price: 30, img: "glock18_grinder.png" },
+    { name: "Glock-18 | Moonrise", price: 30, img: "glock18_m.png" },
+    { name: "Glock-18 | Weasel", price: 30, img: "glock18_weasel.png" },
+    { name: "USP-S | Overgrowth", price: 30, img: "usp_overgrowth.png" },
+    { name: "USP-S | Orange Anolis", price: 30, img: "usp_orange.png" },
+    { name: "USP-S | Ticket to Hell", price: 30, img: "usp_ticket.png" },
+    { name: "USP-S | Flashback", price: 30, img: "usp_flashback.png" },
+    { name: "USP-S | Ancient Visions", price: 30, img: "usp_ancient.png" },
+    { name: "USP-S | Guardian", price: 30, img: "usp_guardian.png" },
+    { name: "USP-S | Cyrex", price: 30, img: "usp_cyrex.png" },
+    { name: "USP-S | Road Rash", price: 30, img: "usp_road.png" },
+
+    // Рожеві (70 ⭐)
+    { name: "Glock-18 | AXIA", price: 70, img: "glock18_axia.png" },
+    { name: "Glock-18 | Water Elemental", price: 70, img: "glock18_water_elemental.png" },
+    { name: "Glock-18 | Snack Attack", price: 70, img: "glock18_snack_attack.png" },
+    { name: "Glock-18 | Vogue", price: 70, img: "glock18_vogue.png" },
+    { name: "USP-S | Orion", price: 70, img: "usp_orion.png" },
+    { name: "USP-S | Cortex", price: 70, img: "usp_cortex.png" },
+    { name: "USP-S | Monster Mashup", price: 70, img: "usp_monster.png" },
+
+    // Червоні (100 ⭐+)
+    { name: "Glock-18 | Wasteland Rebel", price: 100, img: "glock18_wasteland_rebel.png" },
+    { name: "Glock-18 | Bullet Queen", price: 100, img: "glock18_bullet_queen.png" },
     { name: "Glock-18 | Neo-Noir", price: 100, img: "glock18_neo.png" },
+    { name: "Glock-18 | Gold Toof", price: 100, img: "glock18_gold_toof.png" },
+    { name: "USP-S | Neo-Noir", price: 100, img: "usp_neo.png" },
     { name: "USP-S | Kill Confirmed", price: 100, img: "usp_kill.png" },
+    { name: "USP-S | The Traitor", price: 100, img: "usp_the.png" },
+    
+    // Додаткові / Топові
     { name: "AK-47 | Safari Mesh", price: 10, img: "ak_safari.png" },
-    { name: "AK-47 | Redline", price: 200, img: "ak_redline.png" },
-    { name: "AK-47 | Safety Net", price: 55, img: "ak_safety.png" }
+    { name: "AK-47 | Safety Net", price: 55, img: "ak_safety.png" },
+    { name: "AK-47 | Redline", price: 200, img: "ak_redline.png" }
   ];
 
   function toggleMenu() {
@@ -268,7 +330,7 @@
         <img src="${item.img}">
         <div style="font-size:10px; margin-top:5px;">${item.price} ⭐</div>
       </div>
-    `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Inventory Empty</div>";
+     `).join("") : "<div style='opacity:0.3; width:100%; text-align:center;'>Inventory Empty</div>";
     draw(0, 90);
   }
   init();

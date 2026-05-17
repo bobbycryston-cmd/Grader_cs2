@@ -40,11 +40,17 @@
     }
     .wheel-box { position: relative; width: 240px; height: 240px; flex-shrink: 0; }
     #wheelCanvas { width: 100%; height: 100%; }
+    
+    /* Оновлений блок відображення шансів */
     .chance-display {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-size: 24px; font-weight: bold; color: white; text-align: center; width: 80%;
+      font-weight: bold; color: white; text-align: center; width: 90%;
       pointer-events: none; line-height: 1.2;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
+    #chanceNum { font-size: 28px; }
+    #chanceSubText { font-size: 11px; font-weight: bold; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
     .controls-row { display: flex; gap: 6px; margin: 20px 0; width: 100%; justify-content: center; flex-wrap: wrap; }
     .btn-quick {
       background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
@@ -86,7 +92,10 @@
     </div>
     <div class="wheel-box">
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
-      <div class="chance-display" id="chanceText">0%</div>
+      <div class="chance-display">
+        <div id="chanceNum">0%</div>
+        <div id="chanceSubText"></div>
+      </div>
     </div>
     <div class="side-panel">
       <button class="reset-btn" id="resetOut" onclick="resetSelection('out')">×</button>
@@ -217,25 +226,23 @@
     ctx.translate(cx, cy);
     ctx.rotate(currentDeg * Math.PI / 180);
     
-    // Світіння стрілки
     ctx.shadowBlur = 10;
     ctx.shadowColor = "#ff9f43";
     ctx.fillStyle = "#ff9f43";
 
-    const startX = r - 45; // Початок хвоста ближче до центру
-    const headX = r + 20;  // Кінчик носа
-    const tailWidth = 6;   // Ширина хвоста
-    const headSize = 20;   // Розмір голови
+    const startX = r - 45;
+    const headX = r + 20; 
+    const tailWidth = 6;   
+    const headSize = 20;   
 
     ctx.beginPath();
-    // Малюємо складну форму стрілки
-    ctx.moveTo(startX, -tailWidth/2); // Верхній кут хвоста
-    ctx.lineTo(headX - headSize, -tailWidth/2); // До основи голови
-    ctx.lineTo(headX - headSize, -headSize/1.5); // Розширення голови вгору
-    ctx.lineTo(headX, 0); // Кінчик носа
-    ctx.lineTo(headX - headSize, headSize/1.5); // Розширення голови вниз
-    ctx.lineTo(headX - headSize, tailWidth/2); // Назад до основи голови
-    ctx.lineTo(startX, tailWidth/2); // Нижній кут хвоста
+    ctx.moveTo(startX, -tailWidth/2);
+    ctx.lineTo(headX - headSize, -tailWidth/2);
+    ctx.lineTo(headX - headSize, -headSize/1.5);
+    ctx.lineTo(headX, 0);
+    ctx.lineTo(headX - headSize, headSize/1.5);
+    ctx.lineTo(headX - headSize, tailWidth/2);
+    ctx.lineTo(startX, tailWidth/2);
     ctx.closePath();
     
     ctx.fill();
@@ -273,7 +280,6 @@
       ctx.shadowBlur = 0;
     }
     
-    // Використовуємо нову функцію для малювання стрілки
     drawArrow(ctx, cx, cy, r, currentDeg);
   }
 
@@ -324,7 +330,7 @@
       selIn.forEach(item => {
         html += `<img src="${item.img}" title="${item.name}">`;
       });
-      html += `</div><div>Обрано скінів: ${selIn.length}<br><span style="color:#f1c40f">${getSelInPrice()} ⭐</span></div>`;
+      html += `</div><div>Skins selected: ${selIn.length}<br><span style="color:#f1c40f">${getSelInPrice()} ⭐</span></div>`;
       inContent.innerHTML = html;
       document.getElementById("resetIn").style.display = "block";
     }
@@ -332,15 +338,43 @@
     update();
   }
 
+  // Розрахунок тексту та відповідного кольору для відсотків шансу
+  function getChanceVisuals(pct) {
+    if (pct >= 0 && pct < 15) {
+      return { text: "Very Low Chance", color: "#ff4d4d" };
+    } else if (pct >= 15 && pct < 35) {
+      return { text: "Low Chance", color: "#ff9f43" };
+    } else if (pct >= 35 && pct <= 60) {
+      return { text: "Medium Chance", color: "#ffdd57" };
+    } else {
+      return { text: "High Chance", color: "#2ed573" };
+    }
+  }
+
   function update() {
     if(currentStatus !== "idle") return;
+    const chanceNumEl = document.getElementById("chanceNum");
+    const chanceSubEl = document.getElementById("chanceSubText");
+
     if(selIn.length > 0 && selOut) {
       let c = Math.min(getSelInPrice() / selOut.price, 0.95);
-      document.getElementById("chanceText").innerHTML = Math.floor(c * 100) + "%";
+      let pct = Math.floor(c * 100);
+      
+      // Налаштування відсотків
+      chanceNumEl.innerHTML = pct + "%";
+      chanceNumEl.style.color = "white";
+      
+      // Встановлення кастомного підпису з кольором
+      let visuals = getChanceVisuals(pct);
+      chanceSubEl.innerText = visuals.text;
+      chanceSubEl.style.color = visuals.color;
+
       draw(c, 90);
       document.getElementById("uBtn").disabled = false;
     } else {
-      document.getElementById("chanceText").innerHTML = "0%";
+      chanceNumEl.innerHTML = "0%";
+      chanceNumEl.style.color = "white";
+      chanceSubEl.innerText = "";
       draw(0, 90);
       document.getElementById("uBtn").disabled = true;
     }
@@ -371,6 +405,9 @@
     const totalDist = (spins * 360) + (finalAngle - startDeg);
     let startTime = null;
     
+    const chanceNumEl = document.getElementById("chanceNum");
+    const chanceSubEl = document.getElementById("chanceSubText");
+
     function animate(t) {
       if(!startTime) startTime = t;
       let prog = Math.min((t - startTime) / 5200, 1);
@@ -380,18 +417,27 @@
       draw(chance, currentPos % 360);
       
       if(prog < 1) {
-        document.getElementById("chanceText").innerHTML = Math.floor(chance * 100) + "%";
+        let pct = Math.floor(chance * 100);
+        chanceNumEl.innerHTML = pct + "%";
+        let visuals = getChanceVisuals(pct);
+        chanceSubEl.innerText = visuals.text;
+        chanceSubEl.style.color = visuals.color;
+        
         requestAnimationFrame(animate);
       } else {
         let savedTarget = {...selOut};
         
         if(win) {
           currentStatus = "win";
-          document.getElementById("chanceText").innerHTML = "<span style='color:#2ecc71; font-size:20px; font-weight:900;'>Upgrade successful!</span>";
+          // Виводимо оновлений статус успіху
+          chanceNumEl.innerHTML = "<span style='color:#2ecc71; font-size:18px; font-weight:900;'>Upgrade successful!</span>";
+          chanceSubEl.innerText = "";
           items.push({...savedTarget});
         } else {
           currentStatus = "fail";
-          document.getElementById("chanceText").innerHTML = "<span style='color:#e74c3c; font-size:21px; font-weight:900;'>Upgrade failed!</span>";
+          // Виводимо оновлений статус невдачі
+          chanceNumEl.innerHTML = "<span style='color:#e74c3c; font-size:19px; font-weight:900;'>Upgrade Failed!</span>";
+          chanceSubEl.innerText = "";
         }
         
         draw(chance, currentPos % 360);

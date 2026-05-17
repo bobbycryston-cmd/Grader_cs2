@@ -387,11 +387,11 @@
         
         if(win) {
           currentStatus = "win";
-          document.getElementById("chanceText").innerHTML = "<span style='color:#2ecc71; font-size:20px; font-weight:900;'>SUCCESS</span>";
+          document.getElementById("chanceText").innerHTML = "<span style='color:#2ecc71; font-size:20px; font-weight:900;'>Upgrade successful!</span>";
           items.push({...savedTarget});
         } else {
           currentStatus = "fail";
-          document.getElementById("chanceText").innerHTML = "<span style='color:#e74c3c; font-size:21px; font-weight:900;'>FAILED</span>";
+          document.getElementById("chanceText").innerHTML = "<span style='color:#e74c3c; font-size:21px; font-weight:900;'>Upgrade failed!</span>";
         }
         
         draw(chance, currentPos % 360);

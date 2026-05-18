@@ -20,6 +20,8 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
     }
     .menu button { width: 100%; margin-top: 5px; padding: 10px; border: none; border-radius: 8px; cursor: pointer; color: black; background: white; font-weight: bold; }
+    .menu button:disabled { opacity: 0.3; cursor: not-allowed; }
+    
     .upgrade-container { width: 100%; max-width: 800px; padding: 15px; box-sizing: border-box; }
     .main-ui { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 15px; margin-top: 10px; }
     .side-panel {
@@ -87,8 +89,8 @@
     <div style="font-weight:bold;"><span id="balance" style="color:#f1c40f;">0</span> ⭐</div>
     <img id="avatar" class="avatar" onclick="toggleMenu()">
     <div class="menu" id="menu">
-      <button onclick="location.href='index.html'">🏠 Home</button>
-      <button onclick="location.href='inventory.html'">🎒 Inventory</button>
+      <button id="navHome" onclick="location.href='index.html'">🏠 Home</button>
+      <button id="navInv" onclick="location.href='inventory.html'">🎒 Inventory</button>
     </div>
   </div>
 </div>
@@ -206,6 +208,8 @@
   ];
 
   function toggleMenu() {
+    // Якщо колесо крутиться, меню взагалі не відкриваємо
+    if (spinning) return;
     const m = document.getElementById("menu");
     m.style.display = m.style.display === "block" ? "none" : "block";
   }
@@ -393,6 +397,11 @@
     currentStatus = "idle";
     document.getElementById("uBtn").disabled = true;
     
+    // БЛОКУЄМО КНОПКИ МЕНЮ НА ЧАС КРУТІННЯ
+    document.getElementById("navHome").disabled = true;
+    document.getElementById("navInv").disabled = true;
+    document.getElementById("menu").style.display = "none"; // Ховаємо меню, якщо воно було відкрите
+    
     const totalPriceIn = getSelInPrice();
     const chance = Math.min(totalPriceIn / selOut.price, 0.95);
     const win = Math.random() < chance;
@@ -412,13 +421,12 @@
     const totalDist = (spins * 360) + (finalAngle - startDeg);
     let startTime = null;
     
-    // ФІКС БАГУ: Списуємо вибрані скіни ТУТ І ЗАРАЗ (в момент старту)
+    // Списуємо вибрані скіни відразу
     let indicesToRemove = selIn.map(item => item.index).sort((a, b) => b - a);
     indicesToRemove.forEach(idx => {
       items.splice(idx, 1);
     });
     localStorage.setItem("items", JSON.stringify(items));
-    // -----------------------------------------------------------
 
     const chanceNumEl = document.getElementById("chanceNum");
     const chanceSubEl = document.getElementById("chanceSubText");
@@ -449,8 +457,8 @@
           currentStatus = "win";
           chanceNumEl.innerHTML = "<span style='color:#2ecc71; font-size:18px; font-weight:900;'>Upgrade successful!</span>";
           chanceSubEl.innerText = "";
-          items.push({...savedTarget}); // Додаємо виграний скін
-          localStorage.setItem("items", JSON.stringify(items)); // Оновлюємо базу даних
+          items.push({...savedTarget}); 
+          localStorage.setItem("items", JSON.stringify(items)); 
         } else {
           currentStatus = "fail";
           chanceNumEl.innerHTML = "<span style='color:#e74c3c; font-size:19px; font-weight:900;'>Upgrade Failed!</span>";
@@ -468,6 +476,11 @@
         document.getElementById("resetOut").style.display = "block";
         
         spinning = false;
+        
+        // РОЗБЛОКУЄМО КНОПКИ МЕНЮ НАЗАД ПІСЛЯ ЗУПИНКИ
+        document.getElementById("navHome").disabled = false;
+        document.getElementById("navInv").disabled = false;
+        
         init();
       }
     }

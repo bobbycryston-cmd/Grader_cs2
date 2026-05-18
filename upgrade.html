@@ -61,17 +61,16 @@
     }
     .btn-main-upgrade:disabled { opacity: 0.2; }
     
-    /* Оновлений блок інвентарю: тепер це сітка, яка переносить предмети вниз */
     .inventory-section { width: 100%; margin-top: 25px; }
     .skin-scroll { 
       display: flex; 
-      flex-wrap: wrap; /* Дозволяє карткам переноситися на наступний рядок */
+      flex-wrap: wrap;
       gap: 12px; 
       padding: 10px 0; 
-      justify-content: center; /* Центрує картки на екрані */
+      justify-content: center;
     }
     .skin-item {
-      width: calc(33.33% - 8px); /* По 3 картки в ряд на мобільних телефонах */
+      width: calc(33.33% - 8px);
       max-width: 110px;
       background: rgba(255,255,255,0.03); padding: 10px;
       border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
@@ -413,6 +412,14 @@
     const totalDist = (spins * 360) + (finalAngle - startDeg);
     let startTime = null;
     
+    // ФІКС БАГУ: Списуємо вибрані скіни ТУТ І ЗАРАЗ (в момент старту)
+    let indicesToRemove = selIn.map(item => item.index).sort((a, b) => b - a);
+    indicesToRemove.forEach(idx => {
+      items.splice(idx, 1);
+    });
+    localStorage.setItem("items", JSON.stringify(items));
+    // -----------------------------------------------------------
+
     const chanceNumEl = document.getElementById("chanceNum");
     const chanceSubEl = document.getElementById("chanceSubText");
 
@@ -442,7 +449,8 @@
           currentStatus = "win";
           chanceNumEl.innerHTML = "<span style='color:#2ecc71; font-size:18px; font-weight:900;'>Upgrade successful!</span>";
           chanceSubEl.innerText = "";
-          items.push({...savedTarget});
+          items.push({...savedTarget}); // Додаємо виграний скін
+          localStorage.setItem("items", JSON.stringify(items)); // Оновлюємо базу даних
         } else {
           currentStatus = "fail";
           chanceNumEl.innerHTML = "<span style='color:#e74c3c; font-size:19px; font-weight:900;'>Upgrade Failed!</span>";
@@ -450,13 +458,6 @@
         }
         
         draw(chance, currentPos % 360);
-        
-        let indicesToRemove = selIn.map(item => item.index).sort((a, b) => b - a);
-        indicesToRemove.forEach(idx => {
-          items.splice(idx, 1);
-        });
-        
-        localStorage.setItem("items", JSON.stringify(items));
         
         selIn = [];
         document.getElementById("inContent").innerHTML = "Select Skin";
